@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Icons } from '@/components/shared/icons';
 import { ThemeToggle } from '@/components/shared/theme-toggle';
 import { Button } from '@/components/ui/button';
-import { NAV_ITEMS } from '@/constants/navigation';
+import { DASHBOARD_LINK, NAV_ITEMS } from '@/constants/navigation';
 import { SITE } from '@/constants/site';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import { DURATION, EASE_DEFAULT, gsap, useGSAP } from '@/lib/gsap';
@@ -99,6 +99,11 @@ export function Navbar() {
 
         {/* Actions */}
         <div className="flex items-center gap-2">
+          <Button variant="ghost" size="icon" asChild aria-label="Dashboard">
+            <Link href={DASHBOARD_LINK.href}>
+              <Icons.analytics size={18} />
+            </Link>
+          </Button>
           <ThemeToggle />
 
           {/* Wishlist */}

@@ -9,3 +9,8 @@ export const NAV_ITEMS: NavItem[] = [
   { label: 'About', href: '/#about' },
   { label: 'FAQ', href: '/#faq' },
 ];
+
+export const DASHBOARD_LINK: NavItem = {
+  label: 'Dashboard',
+  href: '/dashboard',
+};
