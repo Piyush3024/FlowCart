@@ -25,6 +25,7 @@ import {
   IconEye,
   IconEyeOff,
   IconFilter,
+  IconHeart,
   IconHome,
   IconInbox,
   IconInfoCircle,
@@ -47,6 +48,7 @@ import {
   IconSend,
   IconSettings,
   IconShieldCheck,
+  IconShoppingBag,
   IconSun,
   IconTool,
   IconTrash,
@@ -95,6 +97,8 @@ export const Icons = {
   externalLink: IconExternalLink,
   send: IconSend,
   list: IconList,
+  heart: IconHeart,
+  shoppingBag: IconShoppingBag,
 
   // Navigation arrows
   chevronDown: IconChevronDown,
