@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { Icons } from '@/components/shared/icons';
 import { ThemeToggle } from '@/components/shared/theme-toggle';
+import { Button } from '@/components/ui/button';
 import { NAV_ITEMS } from '@/constants/navigation';
 import { SITE } from '@/constants/site';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
@@ -103,44 +104,52 @@ export function Navbar() {
           <ThemeToggle />
 
           {/* Wishlist */}
-          <Link
-            href="/#wishlist"
-            aria-label={`Wishlist (${wishlistIds.length} items)`}
-            className="relative p-2 text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <Icons.heart size={20} />
+          <div className="relative">
+            <Button
+              variant="ghost"
+              size="icon"
+              asChild
+              aria-label={`Wishlist (${wishlistIds.length} items)`}
+            >
+              <Link href="/#wishlist">
+                <Icons.heart size={20} />
+              </Link>
+            </Button>
             {wishlistIds.length > 0 && (
-              <span className="absolute top-1 right-1 w-4 h-4 bg-primary text-primary-foreground text-[10px] font-bold rounded-full flex items-center justify-center">
+              <span className="absolute top-1 right-1 w-4 h-4 bg-primary text-primary-foreground text-[10px] font-bold rounded-full flex items-center justify-center pointer-events-none">
                 {wishlistIds.length}
               </span>
             )}
-          </Link>
+          </div>
 
           {/* Cart */}
-          <button
-            type="button"
-            onClick={() => setCartDrawerOpen(true)}
-            aria-label={`Cart (${totalItems()} items)`}
-            className="relative p-2 text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <Icons.shoppingBag size={20} />
+          <div className="relative">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setCartDrawerOpen(true)}
+              aria-label={`Cart (${totalItems()} items)`}
+            >
+              <Icons.shoppingBag size={20} />
+            </Button>
             {totalItems() > 0 && (
-              <span className="absolute top-1 right-1 w-4 h-4 bg-primary text-primary-foreground text-[10px] font-bold rounded-full flex items-center justify-center">
+              <span className="absolute top-1 right-1 w-4 h-4 bg-primary text-primary-foreground text-[10px] font-bold rounded-full flex items-center justify-center pointer-events-none">
                 {totalItems()}
               </span>
             )}
-          </button>
+          </div>
 
           {/* Mobile menu toggle */}
-          <button
-            type="button"
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={mobileMenuOpen}
-            className="md:hidden p-2 text-muted-foreground hover:text-foreground transition-colors"
+            className="md:hidden"
           >
             {mobileMenuOpen ? <Icons.close size={20} /> : <Icons.menu size={20} />}
-          </button>
+          </Button>
         </div>
       </nav>
 

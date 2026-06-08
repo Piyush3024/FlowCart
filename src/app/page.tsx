@@ -1,7 +1,14 @@
+import { CartDrawer } from '@/components/layout/cart-drawer';
+import { Navbar } from '@/components/layout/navbar';
+
 export default function HomePage() {
   return (
-    <main>
-      <p className="p-8 text-foreground font-sans">FlowCart: Hey this is a test</p>
-    </main>
+    <>
+      <Navbar />
+      <CartDrawer />
+      <main className="pt-16">
+        <p className="p-8 text-foreground font-sans">FlowCart</p>
+      </main>
+    </>
   );
 }
