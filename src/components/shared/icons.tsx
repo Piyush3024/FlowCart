@@ -49,6 +49,7 @@ import {
   IconSettings,
   IconShieldCheck,
   IconShoppingBag,
+  IconStar,
   IconSun,
   IconTool,
   IconTrash,
@@ -99,6 +100,7 @@ export const Icons = {
   list: IconList,
   heart: IconHeart,
   shoppingBag: IconShoppingBag,
+  star: IconStar,
 
   // Navigation arrows
   chevronDown: IconChevronDown,

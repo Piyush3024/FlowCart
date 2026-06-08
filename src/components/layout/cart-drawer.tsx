@@ -73,12 +73,12 @@ export function CartDrawer() {
   return (
     <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label="Shopping cart">
       {/* Overlay */}
-      <button
-        type="button"
+      <Button
+        variant="ghost"
         ref={overlayRef}
         onClick={handleClose}
         aria-label="Close cart"
-        className="absolute inset-0 w-full bg-black/60 backdrop-blur-sm cursor-default"
+        className="absolute inset-0 w-full h-full bg-black/60 backdrop-blur-sm cursor-default hover:bg-black/60 active:translate-y-0 rounded-none border-none p-0 focus-visible:ring-0"
       />
 
       {/* Drawer */}

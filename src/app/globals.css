@@ -131,12 +131,14 @@ h6 {
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  /* biome-ignore lint/complexity/noImportantStyles: standard prefers-reduced-motion override requires important */
   *,
   *::before,
   *::after {
+    /* biome-ignore lint/complexity/noImportantStyles: standard prefers-reduced-motion override requires important */
     animation-duration: 0.01ms !important;
+    /* biome-ignore lint/complexity/noImportantStyles: standard prefers-reduced-motion override requires important */
     animation-iteration-count: 1 !important;
+    /* biome-ignore lint/complexity/noImportantStyles: standard prefers-reduced-motion override requires important */
     transition-duration: 0.01ms !important;
   }
 }
