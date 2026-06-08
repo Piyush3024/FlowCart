@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import { DURATION, EASE_DEFAULT, gsap, ScrollTrigger } from '@/lib/gsap';
+import { useRef } from 'react';
+import { DURATION, EASE_DEFAULT, gsap, ScrollTrigger, useGSAP } from '@/lib/gsap';
 import { useReducedMotion } from './use-reduced-motion';
 
 interface ScrollTriggerOptions {
@@ -16,13 +16,13 @@ export function useScrollTrigger<T extends HTMLElement>(options: ScrollTriggerOp
   const ref = useRef<T>(null);
   const reducedMotion = useReducedMotion();
 
-  useEffect(() => {
-    if (!ref.current || reducedMotion) return;
+  useGSAP(
+    () => {
+      if (reducedMotion) return;
 
-    const ctx = gsap.context(() => {
       gsap.from(options.selector, {
+        autoAlpha: 0,
         y: options.y ?? 50,
-        opacity: 0,
         duration: options.duration ?? DURATION.normal,
         stagger: options.stagger ?? 0.15,
         ease: EASE_DEFAULT,
@@ -32,22 +32,18 @@ export function useScrollTrigger<T extends HTMLElement>(options: ScrollTriggerOp
           toggleActions: 'play none none none',
         },
       });
-    }, ref);
+    },
+    {
+      scope: ref,
+      dependencies: [reducedMotion],
+    },
+  );
 
+  useGSAP(() => {
     return () => {
-      ctx.revert();
-      ScrollTrigger.getAll().forEach((t) => {
-        t.kill();
-      });
+      for (const t of ScrollTrigger.getAll()) t.kill();
     };
-  }, [
-    reducedMotion,
-    options.selector,
-    options.y,
-    options.stagger,
-    options.duration,
-    options.start,
-  ]);
+  }, []);
 
   return ref;
 }
