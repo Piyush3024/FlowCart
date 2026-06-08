@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { NAV_ITEMS } from '@/constants/navigation';
 import { SITE } from '@/constants/site';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
-import { DURATION, EASE_DEFAULT, gsap } from '@/lib/gsap';
+import { DURATION, EASE_DEFAULT, gsap, useGSAP } from '@/lib/gsap';
 import { cn } from '@/lib/utils';
 import { useCartStore } from '@/stores/cart.store';
 import { useUIStore } from '@/stores/ui.store';
@@ -29,41 +29,39 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', handler);
   }, []);
 
-  useEffect(() => {
-    if (!navRef.current || reducedMotion) return;
-    const ctx = gsap.context(() => {
+  useGSAP(
+    () => {
+      if (reducedMotion) return;
       gsap.from(navRef.current, {
+        autoAlpha: 0,
         y: -80,
-        opacity: 0,
         duration: DURATION.normal,
         ease: EASE_DEFAULT,
         delay: 0.2,
         clearProps: 'all',
       });
-    });
-    return () => ctx.revert();
-  }, [reducedMotion]);
+    },
+    { scope: navRef, dependencies: [reducedMotion] },
+  );
 
-  useEffect(() => {
-    if (!mobileMenuRef.current || reducedMotion) return;
-    const ctx = gsap.context(() => {
-      if (mobileMenuOpen) {
-        gsap.fromTo(
-          mobileMenuRef.current,
-          { opacity: 0, y: -10 },
-          { opacity: 1, y: 0, duration: DURATION.fast, ease: EASE_DEFAULT },
-        );
-        gsap.from('.mobile-nav-item', {
-          opacity: 0,
-          x: -20,
-          stagger: 0.08,
-          duration: DURATION.fast,
-          ease: EASE_DEFAULT,
-        });
-      }
-    });
-    return () => ctx.revert();
-  }, [mobileMenuOpen, reducedMotion]);
+  useGSAP(
+    () => {
+      if (!mobileMenuOpen || reducedMotion) return;
+      gsap.fromTo(
+        mobileMenuRef.current,
+        { autoAlpha: 0, y: -10 },
+        { autoAlpha: 1, y: 0, duration: DURATION.fast, ease: EASE_DEFAULT },
+      );
+      gsap.from('.mobile-nav-item', {
+        autoAlpha: 0,
+        x: -20,
+        stagger: 0.08,
+        duration: DURATION.fast,
+        ease: EASE_DEFAULT,
+      });
+    },
+    { scope: navRef, dependencies: [mobileMenuOpen, reducedMotion] },
+  );
 
   return (
     <header
