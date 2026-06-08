@@ -6,7 +6,10 @@ import {
   IconBell,
   IconBook,
   IconBrandGoogleDrive,
+  IconBrandInstagram,
+  IconBrandPinterest,
   IconBrandSlack,
+  IconBrandTwitter,
   IconCalendar,
   IconCheck,
   IconChecks,
@@ -115,6 +118,9 @@ export const Icons = {
   mail: IconMail,
   googleDrive: IconBrandGoogleDrive,
   slack: IconBrandSlack,
+  instagram: IconBrandInstagram,
+  twitter: IconBrandTwitter,
+  pinterest: IconBrandPinterest,
 
   // UI / Feedback
   spinner: IconLoader2,

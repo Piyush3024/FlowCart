@@ -1,4 +1,5 @@
 import { CartDrawer } from '@/components/layout/cart-drawer';
+import { Footer } from '@/components/layout/footer';
 import { Navbar } from '@/components/layout/navbar';
 import { CategoriesSection } from '@/components/sections/categories/categories-section';
 import { FaqSection } from '@/components/sections/faq/faq-section';
@@ -22,6 +23,7 @@ export default function HomePage() {
         <TestimonialsSection />
         <FaqSection />
       </main>
+      <Footer />
     </>
   );
 }
