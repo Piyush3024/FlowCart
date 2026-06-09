@@ -1,16 +1,17 @@
 'use client';
 
 import Link from 'next/link';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
-import { DURATION, EASE_DEFAULT, gsap, useGSAP } from '@/lib/gsap';
+import { DURATION, EASE_DEFAULT, gsap, ScrollTrigger, useGSAP } from '@/lib/gsap';
 import { cn } from '@/lib/utils';
 import { useFaqs } from '@/services/faq.service';
 
@@ -19,11 +20,18 @@ const SKELETON_IDS = Array.from({ length: 5 }).map((_, i) => `faq-skeleton-${i}`
 export function FaqSection() {
   const reducedMotion = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
-  const { data: faqs, isLoading, isError } = useFaqs();
+  const { data: faqs, isPending, isError, refetch } = useFaqs();
+
+  useEffect(() => {
+    if (!isPending) {
+      const id = setTimeout(() => ScrollTrigger.refresh(), 300);
+      return () => clearTimeout(id);
+    }
+  }, [isPending]);
 
   useGSAP(
     () => {
-      if (reducedMotion || isLoading || !faqs?.length) return;
+      if (reducedMotion || isPending || !faqs?.length) return;
 
       gsap.from('.faq-header', {
         autoAlpha: 0,
@@ -50,7 +58,7 @@ export function FaqSection() {
         },
       });
     },
-    { scope: sectionRef, dependencies: [reducedMotion, isLoading, faqs] },
+    { scope: sectionRef, dependencies: [reducedMotion, isPending, faqs] },
   );
 
   return (
@@ -83,7 +91,7 @@ export function FaqSection() {
           <p className="text-sm text-muted-foreground max-w-md mx-auto leading-relaxed">
             Everything you need to know about FlowCart. Can&apos;t find an answer?{' '}
             <Link
-              href={`mailto:hello@flowcart.co`}
+              href="mailto:hello@flowcart.co"
               className="text-foreground underline underline-offset-4 hover:text-muted-foreground transition-colors"
             >
               Contact us
@@ -94,14 +102,22 @@ export function FaqSection() {
 
         {/* Error state */}
         {isError && (
-          <p className="text-center text-sm text-muted-foreground py-12">
-            Could not load FAQs. Please try again later.
-          </p>
+          <div className="py-12 text-center flex flex-col items-center gap-3">
+            <p className="text-sm text-muted-foreground">Could not load FAQs. Please try again.</p>
+            <Button variant="outline" size="sm" onClick={() => refetch()}>
+              Retry
+            </Button>
+          </div>
         )}
 
         {/* Skeleton */}
-        {isLoading && (
-          <div className="flex flex-col gap-4" role="status" aria-label="Loading FAQs">
+        {isPending && (
+          <div
+            className="flex flex-col gap-4"
+            role="status"
+            aria-label="Loading FAQs"
+            aria-busy="true"
+          >
             {SKELETON_IDS.map((id) => (
               <div key={id} className="flex flex-col gap-2 py-3 border-b border-border">
                 <Skeleton className="h-4 w-3/4 rounded" />
@@ -112,12 +128,15 @@ export function FaqSection() {
         )}
 
         {/* FAQ Accordion */}
-        {!isLoading && faqs && (
+        {!isPending && !isError && faqs && (
           <Accordion
             type="single"
             collapsible
             className="faq-list w-full"
             aria-label="FAQ accordion"
+            onValueChange={() => {
+              setTimeout(() => ScrollTrigger.refresh(), 300);
+            }}
           >
             {faqs.map((faq) => (
               <AccordionItem key={faq.id} value={faq.id} className="faq-item">

@@ -1,5 +1,6 @@
 'use client';
 
+import { useQueryClient } from '@tanstack/react-query';
 import { useRef } from 'react';
 import { toast } from 'sonner';
 import { Icons } from '@/components/shared/icons';
@@ -7,9 +8,11 @@ import { ImageWithFallback } from '@/components/shared/image-with-fallback';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { QUERY_KEYS } from '@/constants/query-keys';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import { DURATION, EASE_DEFAULT, gsap, useGSAP } from '@/lib/gsap';
 import { cn, formatPrice } from '@/lib/utils';
+import { fetchProductDetail } from '@/services/product.service';
 import { useCartStore } from '@/stores/cart.store';
 import { useQuickViewStore } from '@/stores/quick-view.store';
 import { useWishlistStore } from '@/stores/wishlist.store';
@@ -23,12 +26,21 @@ interface ProductCardProps {
 export function ProductCard({ product, priority = false }: ProductCardProps) {
   const reducedMotion = useReducedMotion();
   const cardRef = useRef<HTMLDivElement>(null);
+  const queryClient = useQueryClient();
   const addItem = useCartStore((s) => s.addItem);
-  const { toggle, has } = useWishlistStore();
+  const toggle = useWishlistStore((s) => s.toggle);
+  const has = useWishlistStore((s) => s.has);
   const openQuickView = useQuickViewStore((s) => s.open);
   const isWishlisted = has(product.id);
 
-  // Hover animation
+  const handleMouseEnter = () => {
+    queryClient.prefetchQuery({
+      queryKey: QUERY_KEYS.products.detail(product.id),
+      queryFn: () => fetchProductDetail(product.id),
+      staleTime: 5 * 60 * 1000,
+    });
+  };
+
   useGSAP(
     () => {
       if (reducedMotion || !cardRef.current) return;
@@ -111,8 +123,12 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
     : null;
 
   return (
-    <Card ref={cardRef} className="group border-0 ring-0 bg-transparent p-0 gap-3 rounded-none">
-      {/* Image container — first child, triggers has-[>img:first-child]:pt-0 */}
+    <Card
+      ref={cardRef}
+      onMouseEnter={handleMouseEnter}
+      className="group border-0 ring-0 bg-transparent p-0 gap-3 rounded-none"
+    >
+      {/* Image container */}
       <div className="relative aspect-[3/4] overflow-hidden rounded-xl bg-muted">
         <ImageWithFallback
           src={product.image}

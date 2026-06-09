@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { Icons } from '@/components/shared/icons';
 import { ImageWithFallback } from '@/components/shared/image-with-fallback';
@@ -16,9 +16,11 @@ import { useWishlistStore } from '@/stores/wishlist.store';
 
 export function QuickViewModal() {
   const reducedMotion = useReducedMotion();
-  const { product, close } = useQuickViewStore();
+  const product = useQuickViewStore((s) => s.product);
+  const close = useQuickViewStore((s) => s.close);
   const addItem = useCartStore((s) => s.addItem);
-  const { toggle, has } = useWishlistStore();
+  const toggle = useWishlistStore((s) => s.toggle);
+  const has = useWishlistStore((s) => s.has);
   const overlayRef = useRef<HTMLButtonElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
@@ -79,6 +81,49 @@ export function QuickViewModal() {
     { dependencies: [product] },
   );
 
+  // Focus trap
+  useEffect(() => {
+    if (!product || !modalRef.current) return;
+
+    const focusableSelectors = [
+      'a[href]',
+      'button:not([disabled])',
+      'input:not([disabled])',
+      'select:not([disabled])',
+      'textarea:not([disabled])',
+      '[tabindex]:not([tabindex="-1"])',
+    ].join(', ');
+
+    const focusableEls = Array.from(
+      modalRef.current.querySelectorAll<HTMLElement>(focusableSelectors),
+    );
+
+    if (focusableEls.length === 0) return;
+
+    const firstEl = focusableEls[0];
+    const lastEl = focusableEls[focusableEls.length - 1];
+
+    firstEl.focus();
+
+    const handleTab = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+      if (e.shiftKey) {
+        if (document.activeElement === firstEl) {
+          lastEl.focus();
+          e.preventDefault();
+        }
+      } else {
+        if (document.activeElement === lastEl) {
+          firstEl.focus();
+          e.preventDefault();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleTab);
+    return () => window.removeEventListener('keydown', handleTab);
+  }, [product]);
+
   if (!product) return null;
 
   const handleAddToCart = () => {
@@ -108,7 +153,7 @@ export function QuickViewModal() {
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       role="dialog"
       aria-modal="true"
-      aria-label={`Quick view: ${product.name}`}
+      aria-labelledby="quick-view-title"
     >
       {/* Overlay */}
       <Button
@@ -193,7 +238,10 @@ export function QuickViewModal() {
               <span className="text-[11px] tracking-widest uppercase text-muted-foreground">
                 {product.category}
               </span>
-              <h2 className="font-serif text-2xl font-bold text-card-foreground leading-tight">
+              <h2
+                id="quick-view-title"
+                className="font-serif text-2xl font-bold text-card-foreground leading-tight"
+              >
                 {product.name}
               </h2>
 

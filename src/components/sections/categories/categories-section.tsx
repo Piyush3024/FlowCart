@@ -109,7 +109,7 @@ export function CategoriesSection() {
         aria-label="Product categories"
       >
         {CATEGORIES.map((cat) => (
-          <li key={cat.id} className={cat.span}>
+          <li key={cat.id} className={cn(cat.span, 'h-full')}>
             <Link
               href={cat.href}
               aria-label={`Shop ${cat.label}`}
