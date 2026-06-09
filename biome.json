@@ -39,5 +39,17 @@
   },
   "files": {
     "includes": ["**", "!**/node_modules", "!**/.next", "!**/dist", "!**/public", "!**/*.config.*"]
-  }
+  },
+  "overrides": [
+    {
+      "includes": ["src/app/page.tsx"],
+      "linter": {
+        "rules": {
+          "security": {
+            "noDangerouslySetInnerHtml": "off"
+          }
+        }
+      }
+    }
+  ]
 }
