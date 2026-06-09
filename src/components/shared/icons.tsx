@@ -41,6 +41,7 @@ import {
   IconMessage,
   IconMessageCircle,
   IconMessages,
+  IconMinus,
   IconMoon,
   IconPhone,
   IconPlus,
@@ -104,6 +105,7 @@ export const Icons = {
   heart: IconHeart,
   shoppingBag: IconShoppingBag,
   star: IconStar,
+  minus: IconMinus,
 
   // Navigation arrows
   chevronDown: IconChevronDown,

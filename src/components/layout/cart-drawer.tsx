@@ -208,11 +208,12 @@ export function CartDrawer() {
                         <Button
                           variant="ghost"
                           size="icon"
+                          disabled={item.quantity === 1}
                           onClick={() => updateQty(item.id, item.quantity - 1)}
                           aria-label="Decrease quantity"
                           className="w-7 h-7"
                         >
-                          <Icons.chevronDown size={14} />
+                          <Icons.minus size={14} />
                         </Button>
                         <span className="text-sm w-6 text-center text-foreground tabular-nums">
                           {item.quantity}
@@ -224,7 +225,7 @@ export function CartDrawer() {
                           aria-label="Increase quantity"
                           className="w-7 h-7"
                         >
-                          <Icons.chevronUp size={14} />
+                          <Icons.plus size={14} />
                         </Button>
                       </div>
 
