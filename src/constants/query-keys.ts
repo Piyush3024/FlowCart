@@ -1,7 +1,3 @@
-/**
- * Centralized TanStack Query keys.
- * Use hierarchical arrays for fine-grained cache control.
- */
 export const QUERY_KEYS = {
   products: {
     all: ['products'] as const,

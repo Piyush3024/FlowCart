@@ -1,16 +1,18 @@
+import { ROUTES } from './routes';
+
 export interface NavItem {
   label: string;
   href: string;
 }
 
 export const NAV_ITEMS: NavItem[] = [
-  { label: 'Shop', href: '/#products' },
-  { label: 'Categories', href: '/#categories' },
-  { label: 'About', href: '/#about' },
-  { label: 'FAQ', href: '/#faq' },
+  { label: 'Shop', href: ROUTES.products },
+  { label: 'Categories', href: ROUTES.categories },
+  { label: 'About', href: ROUTES.about },
+  { label: 'FAQ', href: ROUTES.faq },
 ];
 
 export const DASHBOARD_LINK: NavItem = {
   label: 'Dashboard',
-  href: '/dashboard',
+  href: ROUTES.dashboard,
 };
