@@ -1,45 +1,69 @@
+'use client';
+
 import { Icons } from '@/components/shared/icons';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { KPI_STATS } from '@/data/dashboard.mock';
+import { Skeleton } from '@/components/ui/skeleton';
 import { cn, formatPrice } from '@/lib/utils';
+import { useDashboardKpis } from '@/services/dashboard.service';
 
-const KPI_ITEMS = [
+type IconKey = keyof typeof Icons;
+
+const KPI_CONFIG = [
   {
     label: 'Total Revenue',
-    value: formatPrice(KPI_STATS.totalRevenue.value),
-    change: KPI_STATS.totalRevenue.change,
-    icon: 'currencyDollar',
+    icon: 'currencyDollar' as IconKey,
     description: 'vs last year',
+    format: (stats: ReturnType<typeof useDashboardKpis>['data']) =>
+      stats ? formatPrice(stats.totalRevenue.value) : '',
+    change: (stats: ReturnType<typeof useDashboardKpis>['data']) => stats?.totalRevenue.change ?? 0,
   },
   {
     label: 'Total Orders',
-    value: KPI_STATS.totalOrders.value.toLocaleString(),
-    change: KPI_STATS.totalOrders.change,
-    icon: 'list',
+    icon: 'list' as IconKey,
     description: 'vs last year',
+    format: (stats: ReturnType<typeof useDashboardKpis>['data']) =>
+      stats ? stats.totalOrders.value.toLocaleString() : '',
+    change: (stats: ReturnType<typeof useDashboardKpis>['data']) => stats?.totalOrders.change ?? 0,
   },
   {
     label: 'Avg Order Value',
-    value: formatPrice(KPI_STATS.avgOrderValue.value),
-    change: KPI_STATS.avgOrderValue.change,
-    icon: 'shoppingBag',
+    icon: 'shoppingBag' as IconKey,
     description: 'vs last year',
+    format: (stats: ReturnType<typeof useDashboardKpis>['data']) =>
+      stats ? formatPrice(stats.avgOrderValue.value) : '',
+    change: (stats: ReturnType<typeof useDashboardKpis>['data']) =>
+      stats?.avgOrderValue.change ?? 0,
   },
   {
     label: 'Conversion Rate',
-    value: `${KPI_STATS.conversionRate.value}%`,
-    change: KPI_STATS.conversionRate.change,
-    icon: 'analytics',
+    icon: 'analytics' as IconKey,
     description: 'vs last year',
+    format: (stats: ReturnType<typeof useDashboardKpis>['data']) =>
+      stats ? `${stats.conversionRate.value}%` : '',
+    change: (stats: ReturnType<typeof useDashboardKpis>['data']) =>
+      stats?.conversionRate.change ?? 0,
   },
 ] as const;
 
 export function KpiCards() {
+  const { data, isPending } = useDashboardKpis();
+
+  if (isPending) {
+    return (
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: skeleton placeholders
+          <Skeleton key={i} className="h-32 rounded-xl" />
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      {KPI_ITEMS.map((item) => {
-        const isPositive = item.change >= 0;
-        const Icon = Icons[item.icon as keyof typeof Icons] as React.ComponentType<{
+      {KPI_CONFIG.map((item) => {
+        const isPositive = item.change(data) >= 0;
+        const Icon = Icons[item.icon] as React.ComponentType<{
           size?: number;
           className?: string;
         }>;
@@ -59,7 +83,7 @@ export function KpiCards() {
             <CardContent>
               <div className="flex flex-col gap-1">
                 <span className="font-serif text-2xl font-bold text-foreground tabular-nums">
-                  {item.value}
+                  {item.format(data)}
                 </span>
                 <div className="flex items-center gap-1">
                   {isPositive ? (
@@ -74,7 +98,7 @@ export function KpiCards() {
                     )}
                   >
                     {isPositive ? '+' : ''}
-                    {item.change}%
+                    {item.change(data)}%
                   </span>
                   <span className="text-xs text-muted-foreground">{item.description}</span>
                 </div>

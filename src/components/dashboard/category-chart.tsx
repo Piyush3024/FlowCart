@@ -8,7 +8,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
-import { CATEGORY_DATA } from '@/data/dashboard.mock';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useDashboardCategory } from '@/services/dashboard.service';
 
 const chartConfig = {
   apparel: { label: 'Apparel', color: 'var(--foreground)' },
@@ -25,6 +26,24 @@ const COLORS = [
 ];
 
 export function CategoryChart() {
+  const { data, isPending } = useDashboardCategory();
+
+  if (isPending) {
+    return (
+      <Card>
+        <CardHeader>
+          <Skeleton className="h-5 w-32 rounded" />
+          <Skeleton className="h-4 w-24 rounded mt-1" />
+        </CardHeader>
+        <CardContent>
+          <Skeleton className="h-48 w-full rounded-lg" />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const categoryData = data ?? [];
+
   return (
     <Card>
       <CardHeader>
@@ -35,7 +54,7 @@ export function CategoryChart() {
         <ChartContainer config={chartConfig} className="h-48 w-full">
           <PieChart>
             <Pie
-              data={CATEGORY_DATA}
+              data={categoryData}
               cx="50%"
               cy="50%"
               innerRadius={55}
@@ -43,7 +62,7 @@ export function CategoryChart() {
               paddingAngle={3}
               dataKey="value"
             >
-              {CATEGORY_DATA.map((entry, i) => (
+              {categoryData.map((entry, i) => (
                 <Cell key={entry.name} fill={COLORS[i % COLORS.length]} stroke="transparent" />
               ))}
             </Pie>
@@ -53,7 +72,7 @@ export function CategoryChart() {
 
         {/* Legend */}
         <div className="grid grid-cols-2 gap-2 mt-4">
-          {CATEGORY_DATA.map((cat, i) => (
+          {categoryData.map((cat, i) => (
             <div key={cat.name} className="flex items-center gap-2">
               <div
                 className="w-2.5 h-2.5 rounded-sm shrink-0"

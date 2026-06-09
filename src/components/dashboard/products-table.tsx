@@ -1,5 +1,8 @@
+'use client';
+
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
   TableBody,
@@ -8,10 +11,33 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { TOP_PRODUCTS } from '@/data/dashboard.mock';
 import { formatPrice } from '@/lib/utils';
+import { useDashboardProducts } from '@/services/dashboard.service';
 
 export function ProductsTable() {
+  const { data, isPending } = useDashboardProducts();
+
+  if (isPending) {
+    return (
+      <Card>
+        <CardHeader>
+          <Skeleton className="h-5 w-28 rounded" />
+          <Skeleton className="h-4 w-44 rounded mt-1" />
+        </CardHeader>
+        <CardContent className="px-0">
+          <div className="flex flex-col gap-3 px-4">
+            {Array.from({ length: 5 }).map((_, i) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: skeleton placeholders
+              <Skeleton key={i} className="h-10 w-full rounded" />
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const products = data ?? [];
+
   return (
     <Card>
       <CardHeader>
@@ -29,7 +55,7 @@ export function ProductsTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {TOP_PRODUCTS.map((product) => (
+            {products.map((product) => (
               <TableRow key={product.id}>
                 <TableCell className="pl-4">
                   <div className="flex flex-col gap-0.5">

@@ -1,5 +1,8 @@
+'use client';
+
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
   TableBody,
@@ -8,8 +11,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { RECENT_ORDERS } from '@/data/dashboard.mock';
 import { formatPrice } from '@/lib/utils';
+import { useDashboardOrders } from '@/services/dashboard.service';
 
 const STATUS_VARIANTS: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
   completed: 'default',
@@ -19,6 +22,29 @@ const STATUS_VARIANTS: Record<string, 'default' | 'secondary' | 'destructive' | 
 };
 
 export function RecentOrdersTable() {
+  const { data, isPending } = useDashboardOrders();
+
+  if (isPending) {
+    return (
+      <Card>
+        <CardHeader>
+          <Skeleton className="h-5 w-28 rounded" />
+          <Skeleton className="h-4 w-36 rounded mt-1" />
+        </CardHeader>
+        <CardContent className="px-0">
+          <div className="flex flex-col gap-3 px-4">
+            {Array.from({ length: 5 }).map((_, i) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: skeleton placeholders
+              <Skeleton key={i} className="h-10 w-full rounded" />
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const orders = data ?? [];
+
   return (
     <Card>
       <CardHeader>
@@ -36,7 +62,7 @@ export function RecentOrdersTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {RECENT_ORDERS.map((order) => (
+            {orders.map((order) => (
               <TableRow key={order.id}>
                 <TableCell className="pl-4">
                   <div className="flex flex-col gap-0.5">

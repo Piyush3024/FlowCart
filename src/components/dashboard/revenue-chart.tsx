@@ -8,7 +8,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
-import { REVENUE_DATA } from '@/data/dashboard.mock';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useDashboardRevenue } from '@/services/dashboard.service';
 
 const chartConfig = {
   revenue: {
@@ -22,7 +23,24 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function RevenueChart() {
-  const totalRevenue = REVENUE_DATA.reduce((acc, d) => acc + d.revenue, 0);
+  const { data, isPending } = useDashboardRevenue();
+
+  if (isPending) {
+    return (
+      <Card>
+        <CardHeader>
+          <Skeleton className="h-5 w-24 rounded" />
+          <Skeleton className="h-4 w-40 rounded mt-1" />
+        </CardHeader>
+        <CardContent>
+          <Skeleton className="h-64 w-full rounded-lg" />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const revenueData = data ?? [];
+  const totalRevenue = revenueData.reduce((acc, d) => acc + d.revenue, 0);
 
   return (
     <Card>
@@ -32,7 +50,7 @@ export function RevenueChart() {
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="h-64 w-full">
-          <AreaChart data={REVENUE_DATA} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
+          <AreaChart data={revenueData} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="var(--foreground)" stopOpacity={0.15} />
