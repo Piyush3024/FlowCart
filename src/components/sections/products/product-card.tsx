@@ -101,7 +101,8 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
     { scope: cardRef, dependencies: [reducedMotion] },
   );
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.stopPropagation();
     addItem({
       id: product.id,
       name: product.name,
@@ -113,7 +114,8 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
     });
   };
 
-  const handleWishlistToggle = () => {
+  const handleWishlistToggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
     toggle(product.id);
     toast(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist', {
       icon: isWishlisted ? '🤍' : '❤️',
@@ -128,8 +130,8 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
     <Card
       ref={cardRef}
       onMouseEnter={handleMouseEnter}
-      // onClick={() => openQuickView(product)}
-      className="group border-0 ring-0 bg-transparent p-0 gap-3 rounded-none"
+      onClick={() => openQuickView(product)}
+      className="group border-0 ring-0 bg-transparent p-0 gap-3 rounded-none cursor-pointer"
     >
       {/* Image container */}
       <div className="relative aspect-[3/4] overflow-hidden rounded-xl bg-muted">
@@ -212,7 +214,10 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
             variant="outline"
             size="icon"
             className="h-9 w-9 bg-background/90 backdrop-blur-sm border-0"
-            onClick={() => openQuickView(product)}
+            onClick={(e) => {
+              e.stopPropagation();
+              openQuickView(product);
+            }}
             aria-label={`Quick view ${product.name}`}
           >
             <Icons.eye size={15} />
