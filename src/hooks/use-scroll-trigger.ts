@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
-import { DURATION, EASE_DEFAULT, gsap, ScrollTrigger, useGSAP } from '@/lib/gsap';
+import { DURATION, EASE_DEFAULT, gsap, useGSAP } from '@/lib/gsap';
 import { useReducedMotion } from './use-reduced-motion';
 
 interface ScrollTriggerOptions {
@@ -12,7 +12,9 @@ interface ScrollTriggerOptions {
   start?: string;
 }
 
-export function useScrollTrigger<T extends HTMLElement>(options: ScrollTriggerOptions) {
+export function useScrollTrigger<T extends HTMLElement>(
+  options: ScrollTriggerOptions,
+): React.RefObject<T | null> {
   const ref = useRef<T>(null);
   const reducedMotion = useReducedMotion();
 
@@ -38,12 +40,6 @@ export function useScrollTrigger<T extends HTMLElement>(options: ScrollTriggerOp
       dependencies: [reducedMotion],
     },
   );
-
-  useGSAP(() => {
-    return () => {
-      for (const t of ScrollTrigger.getAll()) t.kill();
-    };
-  }, []);
 
   return ref;
 }
