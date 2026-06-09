@@ -50,6 +50,6 @@ export const useCartStore = create<CartStore>()(
 
       totalPrice: () => get().items.reduce((acc, i) => acc + i.price * i.quantity, 0),
     }),
-    { name: 'flowcart-cart' },
+    { name: 'flowcart-cart', partialize: (state) => ({ items: state.items }) },
   ),
 );

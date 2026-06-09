@@ -21,6 +21,6 @@ export const useWishlistStore = create<WishlistStore>()(
 
       has: (id) => get().ids.includes(id),
     }),
-    { name: 'flowcart-wishlist' },
+    { name: 'flowcart-wishlist', partialize: (state) => ({ ids: state.ids }) },
   ),
 );
