@@ -139,11 +139,11 @@ export function FaqSection() {
             }}
           >
             {faqs.map((faq) => (
-              <AccordionItem key={faq.id} value={faq.id} className="faq-item">
-                <AccordionTrigger className="font-serif text-base font-medium text-foreground py-4">
+              <AccordionItem key={faq.id} value={faq.id} className="faq-item m-1">
+                <AccordionTrigger className="font-serif text-base font-medium text-foreground py-4 px-2">
                   {faq.question}
                 </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground leading-relaxed">
+                <AccordionContent className="text-muted-foreground leading-relaxed px-2">
                   {faq.answer}
                 </AccordionContent>
               </AccordionItem>
