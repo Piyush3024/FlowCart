@@ -102,9 +102,28 @@ export function Navbar() {
 
         {/* Actions */}
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" asChild aria-label="Dashboard">
+          <Button
+            variant="outline"
+            size="default"
+            asChild
+            aria-label="Dashboard"
+            className="md:hidden"
+          >
             <Link href={DASHBOARD_LINK.href}>
               <Icons.analytics size={18} />
+            </Link>
+          </Button>
+
+          <Button
+            variant="default"
+            size="default"
+            asChild
+            aria-label="Dashboard"
+            className="hidden md:inline-flex py-5"
+          >
+            <Link href={DASHBOARD_LINK.href}>
+              <Icons.analytics size={18} />
+              Dashboard
             </Link>
           </Button>
           <ThemeToggle />
