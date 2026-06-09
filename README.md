@@ -1,7 +1,7 @@
 # FlowCart
 
-Live: [flowcart.vercel.app](https://flowcart.vercel.app)  
-Dashboard: [flowcart.vercel.app/dashboard](https://flowcart.vercel.app/dashboard)
+Live: [flow-cart-sigma.vercel.app](https://flow-cart-sigma.vercel.app/)  
+Dashboard: [flow-cart-sigma.vercel.app/dashboard](https://flow-cart-sigma.vercel.app/dashboard)
 
 ---
 
@@ -20,8 +20,6 @@ pnpm dev
 ```
 
 Open [localhost:3000](http://localhost:3000)
-
-> Requires Node.js 20+ and pnpm 10+
 
 ---
 
@@ -43,7 +41,7 @@ Open [localhost:3000](http://localhost:3000)
 
 ## GSAP Usage
 
-All GSAP is centralized through `src/lib/gsap.ts` — plugins registered once, exported everywhere. `useGSAP()` from `@gsap/react` replaces `useEffect` for all animation logic, ensuring correct React 18 Strict Mode behavior and automatic cleanup.
+All GSAP is centralized through `src/lib/gsap.ts` — plugins registered once, exported everywhere.
 
 | Component                  | Animation                                                     |
 | -------------------------- | ------------------------------------------------------------- |
@@ -74,7 +72,7 @@ Simulated async fetching with realistic delays to demonstrate loading states, sk
 | `useProducts()`         | `src/services/product.service.ts` | 800ms |
 | `useFaqs()`             | `src/services/faq.service.ts`     | 600ms |
 
-`QueryClient` configured with 5-minute stale time and 10-minute GC time. `ReactQueryDevtools` available in development.
+`QueryClient` configured with 5-minute stale time and 10-minute GC time.
 
 ---
 
@@ -97,19 +95,16 @@ Zustand v5 with persistence where needed.
 Playfair handles all headings and prices, creating a premium editorial feel. Inter handles all body copy and UI elements. The contrast between serif and sans-serif creates hierarchy without needing heavy font weights.
 
 **Dark-first with light mode**  
-Default theme is dark — consistent with Yatri Motorcycles' brand aesthetic. Light mode is fully supported via `next-themes` and CSS custom properties.
+Default theme is dark. Light mode is fully supported via `next-themes` and CSS custom properties.
 
 **Picsum Photos for mock imagery**  
-Seed-based URLs (`picsum.photos/seed/{id}/w/h`) produce deterministic images — same seed always returns the same image. No API key, no rate limits, HTTPS, production-safe.
-
-**`useGSAP` over `useEffect`**  
-Official `@gsap/react` hook handles context scoping, cleanup, and React 18 Strict Mode double-invocation automatically. All animation logic lives inside `useGSAP` calls.
+Seed-based URLs (`picsum.photos/seed/{id}/w/h`) produce deterministic images
 
 **Zustand `persist` middleware**  
-Cart and wishlist survive page refresh — expected behavior on any real e-commerce site.
+Cart and wishlist survive page refresh
 
 **shadcn Nova preset**  
-Chosen for its clean, editorial aesthetic with balanced spacing — matches the premium lifestyle positioning of FlowCart.
+Chosen for its clean, editorial aesthetic with balanced spacing
 
 ---
 
@@ -161,4 +156,3 @@ src/
 pnpm build
 ```
 
-Deploy to Vercel — zero config required with Next.js.
