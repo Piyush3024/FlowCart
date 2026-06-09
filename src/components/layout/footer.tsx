@@ -1,35 +1,44 @@
 'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
+import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import { z } from 'zod';
 import { Icons } from '@/components/shared/icons';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
+import { ROUTES } from '@/constants/routes';
 import { SITE } from '@/constants/site';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import { DURATION, EASE_DEFAULT, gsap, useGSAP } from '@/lib/gsap';
 
+const newsletterSchema = z.object({
+  email: z.string().email('Please enter a valid email address'),
+});
+type NewsletterFormValues = z.infer<typeof newsletterSchema>;
+
 const FOOTER_LINKS = {
   Shop: [
-    { label: 'New Arrivals', href: '/#products' },
-    { label: 'Apparel', href: '/#categories' },
-    { label: 'Accessories', href: '/#categories' },
-    { label: 'Footwear', href: '/#categories' },
-    { label: 'Lifestyle', href: '/#categories' },
+    { label: 'New Arrivals', href: ROUTES.products },
+    { label: 'Apparel', href: ROUTES.categories },
+    { label: 'Accessories', href: ROUTES.categories },
+    { label: 'Footwear', href: ROUTES.categories },
+    { label: 'Lifestyle', href: ROUTES.categories },
   ],
   Help: [
-    { label: 'FAQ', href: '/#faq' },
-    { label: 'Shipping & Returns', href: '/#faq' },
-    { label: 'Size Guide', href: '/#faq' },
+    { label: 'FAQ', href: ROUTES.faq },
+    { label: 'Shipping & Returns', href: ROUTES.faq },
+    { label: 'Size Guide', href: ROUTES.faq },
     { label: 'Contact Us', href: `mailto:${SITE.email}` },
   ],
   Company: [
-    { label: 'About', href: '/#about' },
-    { label: 'Sustainability', href: '/#about' },
-    { label: 'Careers', href: '/#about' },
-    { label: 'Press', href: '/#about' },
+    { label: 'About', href: ROUTES.about },
+    { label: 'Sustainability', href: ROUTES.about },
+    { label: 'Careers', href: ROUTES.about },
+    { label: 'Press', href: ROUTES.about },
   ],
 } as const;
 
@@ -50,8 +59,15 @@ const SOCIAL_LINKS = [
 export function Footer() {
   const reducedMotion = useReducedMotion();
   const footerRef = useRef<HTMLElement>(null);
-  const [email, setEmail] = useState('');
-  const [submitting, setSubmitting] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm<NewsletterFormValues>({
+    resolver: zodResolver(newsletterSchema),
+  });
 
   useGSAP(
     () => {
@@ -72,23 +88,16 @@ export function Footer() {
     { scope: footerRef, dependencies: [reducedMotion] },
   );
 
-  const handleNewsletterSubmit = async () => {
-    if (!email?.includes('@')) {
-      toast.error('Please enter a valid email address');
-      return;
+  const onSubmit = async (_data: NewsletterFormValues) => {
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      toast.success('Subscribed! Welcome to FlowCart.', {
+        description: 'Welcome to FlowCart. Expect good things.',
+      });
+      reset();
+    } catch {
+      toast.error('Failed to subscribe. Please try again.');
     }
-
-    setSubmitting(true);
-
-    // Simulate API call
-    await new Promise((r) => setTimeout(r, 1000));
-
-    toast.success("You're on the list!", {
-      description: 'Welcome to FlowCart. Expect good things.',
-    });
-
-    setEmail('');
-    setSubmitting(false);
   };
 
   return (
@@ -107,30 +116,41 @@ export function Footer() {
             </div>
 
             {/* Newsletter form */}
-            <div className="flex flex-col sm:flex-row gap-3 w-full lg:max-w-md">
-              <Input
-                type="email"
-                placeholder="your@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleNewsletterSubmit()}
-                className="h-11 flex-1"
-                aria-label="Email address for newsletter"
-                disabled={submitting}
-              />
-              <Button
-                onClick={handleNewsletterSubmit}
-                disabled={submitting}
-                className="h-11 px-6 tracking-wider shrink-0"
-                aria-label="Subscribe to newsletter"
-              >
-                {submitting ? (
-                  <Icons.spinner size={16} className="animate-spin" aria-hidden="true" />
-                ) : (
-                  'Subscribe'
-                )}
-              </Button>
-            </div>
+            <form onSubmit={handleSubmit(onSubmit)} noValidate className="w-full lg:max-w-md">
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="flex-1 flex flex-col gap-1">
+                  <label htmlFor="newsletter-email" className="sr-only">
+                    Email address for newsletter
+                  </label>
+                  <Input
+                    id="newsletter-email"
+                    type="email"
+                    placeholder="your@email.com"
+                    {...register('email')}
+                    className="h-11 w-full"
+                    aria-describedby={errors.email ? 'newsletter-error' : undefined}
+                    disabled={isSubmitting}
+                  />
+                  {errors.email && (
+                    <p id="newsletter-error" className="text-xs text-destructive" role="alert">
+                      {errors.email.message}
+                    </p>
+                  )}
+                </div>
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="h-11 px-6 tracking-wider shrink-0"
+                  aria-label="Subscribe to newsletter"
+                >
+                  {isSubmitting ? (
+                    <Icons.spinner size={16} className="animate-spin" aria-hidden="true" />
+                  ) : (
+                    'Subscribe'
+                  )}
+                </Button>
+              </div>
+            </form>
           </div>
         </div>
       </div>

@@ -12,8 +12,13 @@ import { useUIStore } from '@/stores/ui.store';
 import { Button } from '../ui/button';
 
 export function CartDrawer() {
-  const { cartDrawerOpen, setCartDrawerOpen } = useUIStore();
-  const { items, removeItem, updateQty, totalPrice, totalItems } = useCartStore();
+  const cartDrawerOpen = useUIStore((s) => s.cartDrawerOpen);
+  const setCartDrawerOpen = useUIStore((s) => s.setCartDrawerOpen);
+  const items = useCartStore((s) => s.items);
+  const removeItem = useCartStore((s) => s.removeItem);
+  const updateQty = useCartStore((s) => s.updateQty);
+  const totalPrice = useCartStore((s) => s.totalPrice);
+  const totalItems = useCartStore((s) => s.totalItems);
   const reducedMotion = useReducedMotion();
   const drawerRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLButtonElement>(null);
@@ -67,6 +72,49 @@ export function CartDrawer() {
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
   }, [cartDrawerOpen, handleClose]);
+
+  // Focus trap
+  useEffect(() => {
+    if (!cartDrawerOpen || !drawerRef.current) return;
+
+    const focusableSelectors = [
+      'a[href]',
+      'button:not([disabled])',
+      'input:not([disabled])',
+      'select:not([disabled])',
+      'textarea:not([disabled])',
+      '[tabindex]:not([tabindex="-1"])',
+    ].join(', ');
+
+    const focusableEls = Array.from(
+      drawerRef.current.querySelectorAll<HTMLElement>(focusableSelectors),
+    );
+
+    if (focusableEls.length === 0) return;
+
+    const firstEl = focusableEls[0];
+    const lastEl = focusableEls[focusableEls.length - 1];
+
+    firstEl.focus();
+
+    const handleTab = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+      if (e.shiftKey) {
+        if (document.activeElement === firstEl) {
+          lastEl.focus();
+          e.preventDefault();
+        }
+      } else {
+        if (document.activeElement === lastEl) {
+          firstEl.focus();
+          e.preventDefault();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleTab);
+    return () => window.removeEventListener('keydown', handleTab);
+  }, [cartDrawerOpen]);
 
   if (!cartDrawerOpen) return null;
 

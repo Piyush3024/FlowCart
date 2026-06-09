@@ -7,6 +7,7 @@ import { ThemeToggle } from '@/components/shared/theme-toggle';
 import { Button } from '@/components/ui/button';
 import { DASHBOARD_LINK, NAV_ITEMS } from '@/constants/navigation';
 import { SITE } from '@/constants/site';
+import { useHasHydrated } from '@/hooks/use-has-hydrated';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import { DURATION, EASE_DEFAULT, gsap, useGSAP } from '@/lib/gsap';
 import { cn } from '@/lib/utils';
@@ -17,11 +18,13 @@ import { useWishlistStore } from '@/stores/wishlist.store';
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const { setCartDrawerOpen, mobileMenuOpen, setMobileMenuOpen } = useUIStore();
-  const totalItems = useCartStore((s) => s.totalItems);
-  const wishlistIds = useWishlistStore((s) => s.ids);
   const reducedMotion = useReducedMotion();
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLElement>(null);
+
+  const hydrated = useHasHydrated();
+  const totalItems = useCartStore((s) => (hydrated ? s.totalItems() : 0));
+  const wishlistCount = useWishlistStore((s) => (hydrated ? s.ids.length : 0));
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20);
@@ -112,15 +115,19 @@ export function Navbar() {
               variant="ghost"
               size="icon"
               asChild
-              aria-label={`Wishlist (${wishlistIds.length} items)`}
+              aria-label={`Wishlist (${wishlistCount} items)`}
             >
               <Link href="/#wishlist">
                 <Icons.heart size={20} />
               </Link>
             </Button>
-            {wishlistIds.length > 0 && (
-              <span className="absolute top-1 right-1 w-4 h-4 bg-primary text-primary-foreground text-[10px] font-bold rounded-full flex items-center justify-center pointer-events-none">
-                {wishlistIds.length}
+            {wishlistCount > 0 && (
+              <span
+                className="absolute top-1 right-1 w-3 h-3 bg-primary text-primary-foreground text-[9px] font-bold rounded-full flex items-center justify-center pointer-events-none"
+                aria-live="polite"
+                aria-atomic="true"
+              >
+                {wishlistCount}
               </span>
             )}
           </div>
@@ -131,13 +138,17 @@ export function Navbar() {
               variant="ghost"
               size="icon"
               onClick={() => setCartDrawerOpen(true)}
-              aria-label={`Cart (${totalItems()} items)`}
+              aria-label={`Cart (${totalItems} items)`}
             >
               <Icons.shoppingBag size={20} />
             </Button>
-            {totalItems() > 0 && (
-              <span className="absolute top-1 right-1 w-4 h-4 bg-primary text-primary-foreground text-[10px] font-bold rounded-full flex items-center justify-center pointer-events-none">
-                {totalItems()}
+            {totalItems > 0 && (
+              <span
+                className="absolute top-1 right-1 w-3 h-3 bg-primary text-primary-foreground text-[9px] font-bold rounded-full flex items-center justify-center pointer-events-none"
+                aria-live="polite"
+                aria-atomic="true"
+              >
+                {totalItems}
               </span>
             )}
           </div>
@@ -149,6 +160,7 @@ export function Navbar() {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-menu"
             className="md:hidden"
           >
             {mobileMenuOpen ? <Icons.close size={20} /> : <Icons.menu size={20} />}
@@ -159,6 +171,7 @@ export function Navbar() {
       {/* Mobile menu */}
       {mobileMenuOpen && (
         <div
+          id="mobile-menu"
           ref={mobileMenuRef}
           className="md:hidden bg-background/95 backdrop-blur-md border-b border-border"
         >
@@ -174,6 +187,15 @@ export function Navbar() {
                 </Link>
               </li>
             ))}
+            <li className="mobile-nav-item border-t border-border pt-4">
+              <Link
+                href={DASHBOARD_LINK.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-lg font-serif text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {DASHBOARD_LINK.label}
+              </Link>
+            </li>
           </ul>
         </div>
       )}
