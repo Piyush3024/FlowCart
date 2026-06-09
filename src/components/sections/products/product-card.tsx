@@ -29,9 +29,8 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
   const queryClient = useQueryClient();
   const addItem = useCartStore((s) => s.addItem);
   const toggle = useWishlistStore((s) => s.toggle);
-  const has = useWishlistStore((s) => s.has);
   const openQuickView = useQuickViewStore((s) => s.open);
-  const isWishlisted = has(product.id);
+  const isWishlisted = useWishlistStore((s) => s.ids.includes(product.id));
 
   const handleMouseEnter = () => {
     queryClient.prefetchQuery({
@@ -88,8 +87,11 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
         });
       };
 
-      card.addEventListener('mouseenter', enterAnim);
-      card.addEventListener('mouseleave', leaveAnim);
+      const isTouchDevice = window.matchMedia('(hover: none)').matches;
+      if (!isTouchDevice) {
+        card.addEventListener('mouseenter', enterAnim);
+        card.addEventListener('mouseleave', leaveAnim);
+      }
 
       return () => {
         card.removeEventListener('mouseenter', enterAnim);
@@ -126,6 +128,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
     <Card
       ref={cardRef}
       onMouseEnter={handleMouseEnter}
+      // onClick={() => openQuickView(product)}
       className="group border-0 ring-0 bg-transparent p-0 gap-3 rounded-none"
     >
       {/* Image container */}
@@ -191,8 +194,9 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
         {/* Hover actions */}
         <div
           className={cn(
-            'product-actions absolute bottom-3 left-3 right-3 flex gap-2',
-            'opacity-0 translate-y-2',
+            'product-actions absolute bottom-3 left-3 right-3 flex gap-2 z-[9999]',
+            'md:opacity-0 md:translate-y-2',
+            'opacity-100 translate-y-0',
           )}
         >
           <Button

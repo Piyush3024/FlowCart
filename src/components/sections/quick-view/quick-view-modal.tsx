@@ -20,13 +20,11 @@ export function QuickViewModal() {
   const close = useQuickViewStore((s) => s.close);
   const addItem = useCartStore((s) => s.addItem);
   const toggle = useWishlistStore((s) => s.toggle);
-  const has = useWishlistStore((s) => s.has);
+  const isWishlisted = useWishlistStore((s) => (product ? s.ids.includes(product.id) : false));
   const overlayRef = useRef<HTMLButtonElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState(0);
-
-  const isWishlisted = product ? has(product.id) : false;
 
   // Open animation
   useGSAP(
