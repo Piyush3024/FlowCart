@@ -1,8 +1,8 @@
 import { ROUTES } from './routes';
 
 export interface NavItem {
-  label: string;
   href: string;
+  label: string;
 }
 
 export const NAV_ITEMS: NavItem[] = [

@@ -19,7 +19,9 @@ export function PromoBanner() {
 
   useGSAP(
     () => {
-      if (reducedMotion) return;
+      if (reducedMotion) {
+        return;
+      }
       const tween = gsap
         .to('.promo-item', {
           xPercent: -100,
@@ -54,19 +56,19 @@ export function PromoBanner() {
 
   return (
     <div
-      ref={containerRef}
-      className="w-full overflow-hidden bg-primary text-primary-foreground py-3"
       aria-label="Promotions"
+      className="w-full overflow-hidden bg-primary py-3 text-primary-foreground"
+      ref={containerRef}
       role="marquee"
     >
       <div className="flex whitespace-nowrap will-change-transform">
         {allItems.map(({ text, copy }) => (
           <span
+            className="promo-item inline-flex shrink-0 items-center gap-6 px-8 font-medium text-xs uppercase tracking-widest"
             key={`${text}-${copy}`}
-            className="promo-item inline-flex items-center gap-6 px-8 text-xs font-medium tracking-widest uppercase shrink-0"
           >
             {text}
-            <span className="w-1 h-1 rounded-full bg-primary-foreground/40" aria-hidden="true" />
+            <span aria-hidden="true" className="h-1 w-1 rounded-full bg-primary-foreground/40" />
           </span>
         ))}
       </div>

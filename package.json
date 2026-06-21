@@ -6,14 +6,25 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "prepare": "husky"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "lint:check": "ultracite check",
+    "lint:fix": "ultracite fix",
+    "prepare": "lefthook install || true",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
     "@hookform/resolvers": "^5.4.0",
+    "@t3-oss/env-nextjs": "^0.13.11",
     "@tabler/icons-react": "^3.44.0",
     "@tanstack/react-query": "^5.101.0",
     "@tanstack/react-query-devtools": "^5.101.0",
+    "axios": "^1.18.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "gsap": "^3.15.0",
@@ -23,6 +34,7 @@
     "radix-ui": "^1.5.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "react-error-boundary": "^6.1.2",
     "react-hook-form": "^7.78.0",
     "recharts": "3.8.0",
     "shadcn": "^4.10.0",
@@ -34,18 +46,28 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.16",
+    "@commitlint/cli": "^21.0.2",
+    "@commitlint/config-conventional": "^21.0.2",
+    "@playwright/test": "^1.52.0",
     "@tailwindcss/postcss": "^4",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.2.0",
+    "@testing-library/user-event": "^14.6.1",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "husky": "^9.1.7",
-    "lint-staged": "^17.0.7",
+    "@vitejs/plugin-react": "^6.0.2",
+    "@vitest/coverage-v8": "^3.1.1",
+    "jsdom": "^26.0.0",
+    "lefthook": "^1.11.3",
+    "msw": "^2.7.3",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "ultracite": "^7.8.3",
+    "vite": "^8.0.16",
+    "vitest": "^3.1.1"
   },
-  "lint-staged": {
-    "**/*.{ts,tsx}": [
-      "pnpm biome check --write --no-errors-on-unmatched"
-    ]
+  "msw": {
+    "workerDirectory": "public"
   }
 }

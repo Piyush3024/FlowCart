@@ -27,7 +27,7 @@ export default function HomePage() {
     <>
       <Navbar />
       <ClientOverlays />
-      <main>
+      <main id="main-content">
         <HeroSection />
         <PromoBanner />
         <ProductGrid />
@@ -37,8 +37,8 @@ export default function HomePage() {
       </main>
       <Footer />
       <script
-        type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        type="application/ld+json"
       />
     </>
   );

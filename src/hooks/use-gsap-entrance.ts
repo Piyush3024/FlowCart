@@ -7,8 +7,8 @@ import { useReducedMotion } from './use-reduced-motion';
 interface EntranceOptions {
   delay?: number;
   duration?: number;
-  y?: number;
   stagger?: number;
+  y?: number;
 }
 
 export function useGsapEntrance<T extends HTMLElement>(
@@ -20,7 +20,9 @@ export function useGsapEntrance<T extends HTMLElement>(
 
   useGSAP(
     () => {
-      if (reducedMotion) return;
+      if (reducedMotion) {
+        return;
+      }
 
       gsap.from(selector, {
         autoAlpha: 0,

@@ -15,7 +15,9 @@ export function HeroSection() {
 
   useGSAP(
     () => {
-      if (reducedMotion) return;
+      if (reducedMotion) {
+        return;
+      }
 
       const tl = gsap.timeline({ delay: 0.4 });
 
@@ -81,56 +83,56 @@ export function HeroSection() {
 
   return (
     <section
-      ref={containerRef}
-      className="relative min-h-screen flex items-center overflow-hidden bg-background"
       aria-label="Hero"
+      className="relative flex min-h-screen items-center overflow-hidden bg-background"
+      ref={containerRef}
     >
       {/* Background grid texture */}
       <div
+        aria-hidden="true"
         className="absolute inset-0 opacity-[0.03] dark:opacity-[0.06]"
         style={{
           backgroundImage:
             'linear-gradient(var(--foreground) 1px, transparent 1px), linear-gradient(90deg, var(--foreground) 1px, transparent 1px)',
           backgroundSize: '60px 60px',
         }}
-        aria-hidden="true"
       />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center py-24 lg:py-32">
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 items-center gap-12 py-24 lg:grid-cols-2 lg:gap-20 lg:py-32">
           {/* Left — Text */}
           <div className="flex flex-col gap-6 lg:gap-8">
             <div className="hero-eyebrow flex items-center gap-3">
-              <span className="w-8 h-px bg-primary" aria-hidden="true" />
-              <span className="text-xs font-medium tracking-[0.2em] uppercase text-muted-foreground">
+              <span aria-hidden="true" className="h-px w-8 bg-primary" />
+              <span className="font-medium text-muted-foreground text-xs uppercase tracking-[0.2em]">
                 New Collection 2026
               </span>
             </div>
 
             <h1
               className={cn(
-                'hero-headline font-serif font-bold text-foreground leading-[0.95]',
+                'hero-headline font-bold font-serif text-foreground leading-[0.95]',
                 'text-[clamp(3.5rem,8vw,7.5rem)]',
               )}
             >
               Live with
               <br />
-              <span className="italic text-muted-foreground">intention.</span>
+              <span className="text-muted-foreground italic">intention.</span>
             </h1>
 
-            <p className="hero-subtext text-base sm:text-lg text-muted-foreground max-w-md leading-relaxed">
+            <p className="hero-subtext max-w-md text-base text-muted-foreground leading-relaxed sm:text-lg">
               Premium lifestyle products designed for those who care about the details. Crafted to
               last. Built to be loved.
             </p>
 
-            <div className="hero-cta flex flex-wrap gap-4 items-center">
-              <Button asChild size="lg" className="h-12 px-8 tracking-wider">
+            <div className="hero-cta flex flex-wrap items-center gap-4">
+              <Button asChild className="h-12 px-8 tracking-wider" size="lg">
                 <Link href="/#products">
                   Shop Now
                   <Icons.arrowRight size={16} />
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="h-12 px-8 tracking-wider">
+              <Button asChild className="h-12 px-8 tracking-wider" size="lg" variant="outline">
                 <Link href="/#categories">Browse Categories</Link>
               </Button>
             </div>
@@ -138,36 +140,36 @@ export function HeroSection() {
             {/* Social proof */}
             <div className="hero-cta flex items-center gap-6 pt-2">
               <div className="flex flex-col">
-                <span className="font-serif text-2xl font-bold text-foreground">12K+</span>
-                <span className="text-xs text-muted-foreground tracking-wide">Happy customers</span>
+                <span className="font-bold font-serif text-2xl text-foreground">12K+</span>
+                <span className="text-muted-foreground text-xs tracking-wide">Happy customers</span>
               </div>
-              <div className="w-px h-10 bg-border" aria-hidden="true" />
+              <div aria-hidden="true" className="h-10 w-px bg-border" />
               <div className="flex flex-col">
-                <span className="font-serif text-2xl font-bold text-foreground">4.9</span>
-                <span className="text-xs text-muted-foreground tracking-wide">Avg. rating</span>
+                <span className="font-bold font-serif text-2xl text-foreground">4.9</span>
+                <span className="text-muted-foreground text-xs tracking-wide">Avg. rating</span>
               </div>
-              <div className="w-px h-10 bg-border" aria-hidden="true" />
+              <div aria-hidden="true" className="h-10 w-px bg-border" />
               <div className="flex flex-col">
-                <span className="font-serif text-2xl font-bold text-foreground">Free</span>
-                <span className="text-xs text-muted-foreground tracking-wide">Shipping $100+</span>
+                <span className="font-bold font-serif text-2xl text-foreground">Free</span>
+                <span className="text-muted-foreground text-xs tracking-wide">Shipping $100+</span>
               </div>
             </div>
           </div>
 
           {/* Right — Image */}
           <div className="hero-image relative">
-            <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-muted">
+            <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-muted">
               <ImageWithFallback
-                src="https://picsum.photos/seed/hero-main/900/1200"
                 alt="Featured lifestyle product — premium outerwear"
+                className="object-cover"
                 fill
                 priority
-                className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"
+                src="https://picsum.photos/seed/hero-main/900/1200"
               />
               <div
-                className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"
                 aria-hidden="true"
+                className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"
               />
             </div>
 
@@ -175,16 +177,16 @@ export function HeroSection() {
             <div
               className={cn(
                 'absolute -bottom-4 -left-4 sm:-left-8',
-                'bg-card border border-border rounded-xl p-4 shadow-xl',
+                'rounded-xl border border-border bg-card p-4 shadow-xl',
                 'flex items-center gap-3',
               )}
             >
-              <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center shrink-0">
-                <Icons.shieldCheck size={18} className="text-primary-foreground" />
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary">
+                <Icons.shieldCheck className="text-primary-foreground" size={18} />
               </div>
               <div>
-                <p className="text-xs font-medium text-card-foreground">Free Returns</p>
-                <p className="text-xs text-muted-foreground">30-day guarantee</p>
+                <p className="font-medium text-card-foreground text-xs">Free Returns</p>
+                <p className="text-muted-foreground text-xs">30-day guarantee</p>
               </div>
             </div>
 
@@ -193,8 +195,8 @@ export function HeroSection() {
               className={cn(
                 'absolute top-6 -right-2 sm:-right-6',
                 'bg-primary text-primary-foreground',
-                'text-xs font-medium tracking-widest uppercase',
-                'px-4 py-2 rounded-full',
+                'font-medium text-xs uppercase tracking-widest',
+                'rounded-full px-4 py-2',
               )}
             >
               New Arrivals
@@ -205,11 +207,11 @@ export function HeroSection() {
 
       {/* Scroll hint */}
       <div
-        className="hero-scroll-hint absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
         aria-hidden="true"
+        className="hero-scroll-hint absolute bottom-8 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2"
       >
-        <span className="text-xs text-muted-foreground tracking-widest uppercase">Scroll</span>
-        <div className="w-px h-8 bg-gradient-to-b from-muted-foreground to-transparent" />
+        <span className="text-muted-foreground text-xs uppercase tracking-widest">Scroll</span>
+        <div className="h-8 w-px bg-gradient-to-b from-muted-foreground to-transparent" />
       </div>
     </section>
   );

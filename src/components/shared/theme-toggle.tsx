@@ -10,15 +10,17 @@ export function ThemeToggle() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
-  if (!mounted) return <div className="w-9 h-9" />;
+  if (!mounted) {
+    return <div className="h-9 w-9" />;
+  }
 
   return (
     <Button
-      variant="ghost"
-      size="icon"
-      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
       aria-label="Toggle theme"
-      className="text-muted-foreground hover:text-foreground transition-colors"
+      className="text-muted-foreground transition-colors hover:text-foreground"
+      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+      size="icon"
+      variant="ghost"
     >
       {theme === 'dark' ? <Icons.sun size={20} /> : <Icons.moon size={20} />}
     </Button>

@@ -5,11 +5,11 @@ import { DURATION, EASE_DEFAULT, gsap, useGSAP } from '@/lib/gsap';
 import { useReducedMotion } from './use-reduced-motion';
 
 interface ScrollTriggerOptions {
-  selector: string;
-  y?: number;
-  stagger?: number;
   duration?: number;
+  selector: string;
+  stagger?: number;
   start?: string;
+  y?: number;
 }
 
 export function useScrollTrigger<T extends HTMLElement>(
@@ -20,7 +20,9 @@ export function useScrollTrigger<T extends HTMLElement>(
 
   useGSAP(
     () => {
-      if (reducedMotion) return;
+      if (reducedMotion) {
+        return;
+      }
 
       gsap.from(options.selector, {
         autoAlpha: 0,

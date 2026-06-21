@@ -1,26 +1,26 @@
 export interface Product {
+  category: string;
+  colors: ProductColor[];
+  description: string;
   id: string;
-  name: string;
-  slug: string;
-  price: number;
-  originalPrice?: number;
   image: string;
   images: string[];
-  category: string;
-  tags: string[];
+  inStock: boolean;
+  isFeatured?: boolean;
+  isNew?: boolean;
+  name: string;
+  originalPrice?: number;
+  price: number;
   rating: number;
   reviewCount: number;
-  description: string;
   sizes: string[];
-  colors: ProductColor[];
-  inStock: boolean;
-  isNew?: boolean;
-  isFeatured?: boolean;
+  slug: string;
+  tags: string[];
 }
 
 export interface ProductColor {
-  name: string;
   hex: string;
+  name: string;
 }
 
 export type ProductCategory = 'apparel' | 'accessories' | 'footwear' | 'lifestyle' | 'tech';

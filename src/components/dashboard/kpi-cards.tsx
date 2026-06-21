@@ -50,17 +50,17 @@ export function KpiCards() {
 
   if (isPending) {
     return (
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {Array.from({ length: 4 }).map((_, i) => (
           // biome-ignore lint/suspicious/noArrayIndexKey: skeleton placeholders
-          <Skeleton key={i} className="h-32 rounded-xl" />
+          <Skeleton className="h-32 rounded-xl" key={i} />
         ))}
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
       {KPI_CONFIG.map((item) => {
         const isPositive = item.change(data) >= 0;
         const Icon = Icons[item.icon] as React.ComponentType<{
@@ -72,35 +72,35 @@ export function KpiCards() {
           <Card key={item.label} size="sm">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                <CardTitle className="font-medium text-muted-foreground text-xs uppercase tracking-wider">
                   {item.label}
                 </CardTitle>
-                <div className="w-7 h-7 rounded-md bg-muted flex items-center justify-center shrink-0">
-                  <Icon size={14} className="text-muted-foreground" />
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-muted">
+                  <Icon className="text-muted-foreground" size={14} />
                 </div>
               </div>
             </CardHeader>
             <CardContent>
               <div className="flex flex-col gap-1">
-                <span className="font-serif text-2xl font-bold text-foreground tabular-nums">
+                <span className="font-bold font-serif text-2xl text-foreground tabular-nums">
                   {item.format(data)}
                 </span>
                 <div className="flex items-center gap-1">
                   {isPositive ? (
-                    <Icons.chevronUp size={13} className="text-green-500 shrink-0" />
+                    <Icons.chevronUp className="shrink-0 text-green-500" size={13} />
                   ) : (
-                    <Icons.chevronDown size={13} className="text-destructive shrink-0" />
+                    <Icons.chevronDown className="shrink-0 text-destructive" size={13} />
                   )}
                   <span
                     className={cn(
-                      'text-xs font-medium tabular-nums',
+                      'font-medium text-xs tabular-nums',
                       isPositive ? 'text-green-500' : 'text-destructive',
                     )}
                   >
                     {isPositive ? '+' : ''}
                     {item.change(data)}%
                   </span>
-                  <span className="text-xs text-muted-foreground">{item.description}</span>
+                  <span className="text-muted-foreground text-xs">{item.description}</span>
                 </div>
               </div>
             </CardContent>

@@ -21,7 +21,9 @@ export function DashboardShell() {
 
   useGSAP(
     () => {
-      if (reducedMotion) return;
+      if (reducedMotion) {
+        return;
+      }
 
       gsap.from('.dash-section', {
         autoAlpha: 0,
@@ -36,23 +38,23 @@ export function DashboardShell() {
   );
 
   return (
-    <div ref={shellRef} className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" ref={shellRef}>
       {/* Top nav */}
-      <header className="sticky top-0 z-40 bg-background/90 backdrop-blur-md border-b border-border">
-        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
+      <header className="sticky top-0 z-40 border-border border-b bg-background/90 backdrop-blur-md">
+        <div className="mx-auto flex h-14 max-w-screen-xl items-center justify-between gap-4 px-4 sm:px-6">
           <div className="flex items-center gap-4">
             <Link
+              className="font-bold font-serif text-foreground text-lg transition-opacity hover:opacity-70"
               href="/"
-              className="font-serif text-lg font-bold text-foreground hover:opacity-70 transition-opacity"
             >
               {SITE.name}
             </Link>
-            <Separator orientation="vertical" className="h-5" />
-            <span className="text-sm text-muted-foreground">Dashboard</span>
+            <Separator className="h-5" orientation="vertical" />
+            <span className="text-muted-foreground text-sm">Dashboard</span>
           </div>
           <div className="flex items-center gap-2">
             <ThemeToggle />
-            <Button variant="outline" size="sm" asChild>
+            <Button asChild size="sm" variant="outline">
               <Link href="/">
                 <Icons.home size={14} />
                 View Store
@@ -63,11 +65,14 @@ export function DashboardShell() {
       </header>
 
       {/* Main content */}
-      <main className="max-w-screen-xl mx-auto px-4 sm:px-6 py-8 flex flex-col gap-8">
+      <main
+        className="mx-auto flex max-w-screen-xl flex-col gap-8 px-4 py-8 sm:px-6"
+        id="main-content"
+      >
         {/* Page title */}
         <div className="dash-section flex flex-col gap-1">
-          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-foreground">Overview</h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 className="font-bold font-serif text-2xl text-foreground sm:text-3xl">Overview</h1>
+          <p className="text-muted-foreground text-sm">
             FlowCart store performance — last 12 months
           </p>
         </div>
@@ -78,7 +83,7 @@ export function DashboardShell() {
         </div>
 
         {/* Charts row */}
-        <div className="dash-section grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="dash-section grid grid-cols-1 gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2">
             <RevenueChart />
           </div>
@@ -88,7 +93,7 @@ export function DashboardShell() {
         </div>
 
         {/* Tables row */}
-        <div className="dash-section grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="dash-section grid grid-cols-1 gap-6 lg:grid-cols-2">
           <ProductsTable />
           <RecentOrdersTable />
         </div>

@@ -16,4 +16,7 @@ export const DURATION = {
   xslow: 1.4,
 } as const;
 
-export { gsap, ScrollTrigger, useGSAP };
+// biome-ignore lint/performance/noBarrelFile: central GSAP integration point
+export { useGSAP } from '@gsap/react';
+export { default as gsap } from 'gsap';
+export { ScrollTrigger } from 'gsap/ScrollTrigger';

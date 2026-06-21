@@ -1,10 +1,10 @@
 export interface Testimonial {
-  id: string;
-  name: string;
-  handle: string;
   avatar: string;
   content: string;
-  rating: number;
+  handle: string;
+  id: string;
+  name: string;
   product?: string;
+  rating: number;
   verified: boolean;
 }

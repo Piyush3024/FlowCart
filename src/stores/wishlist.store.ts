@@ -2,9 +2,9 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 interface WishlistStore {
+  has: (id: string) => boolean;
   ids: string[];
   toggle: (id: string) => void;
-  has: (id: string) => boolean;
 }
 
 export const useWishlistStore = create<WishlistStore>()(

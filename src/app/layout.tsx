@@ -51,17 +51,23 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
+      className={`${inter.variable} ${playfair.variable}`}
+      data-scroll-behavior="smooth"
       lang="en"
       suppressHydrationWarning
-      data-scroll-behavior="smooth"
-      className={`${inter.variable} ${playfair.variable}`}
     >
       <body>
+        <a
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+          href="#main-content"
+        >
+          Skip to main content
+        </a>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
-          enableSystem={false}
           disableTransitionOnChange
+          enableSystem={false}
         >
           <QueryProvider>
             {children}

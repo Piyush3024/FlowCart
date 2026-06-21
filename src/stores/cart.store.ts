@@ -3,13 +3,13 @@ import { persist } from 'zustand/middleware';
 import type { CartItem } from '@/types/cart.types';
 
 interface CartStore {
-  items: CartItem[];
   addItem: (item: Omit<CartItem, 'quantity'>) => void;
-  removeItem: (id: string) => void;
-  updateQty: (id: string, quantity: number) => void;
   clearCart: () => void;
+  items: CartItem[];
+  removeItem: (id: string) => void;
   totalItems: () => number;
   totalPrice: () => number;
+  updateQty: (id: string, quantity: number) => void;
 }
 
 export const useCartStore = create<CartStore>()(

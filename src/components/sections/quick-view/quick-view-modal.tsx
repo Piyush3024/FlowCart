@@ -29,7 +29,9 @@ export function QuickViewModal() {
   // Open animation
   useGSAP(
     () => {
-      if (!product || reducedMotion) return;
+      if (!product || reducedMotion) {
+        return;
+      }
 
       gsap.fromTo(
         overlayRef.current,
@@ -71,7 +73,9 @@ export function QuickViewModal() {
   useGSAP(
     () => {
       const handler = (e: KeyboardEvent) => {
-        if (e.key === 'Escape' && product) handleClose();
+        if (e.key === 'Escape' && product) {
+          handleClose();
+        }
       };
       window.addEventListener('keydown', handler);
       return () => window.removeEventListener('keydown', handler);
@@ -81,7 +85,9 @@ export function QuickViewModal() {
 
   // Focus trap
   useEffect(() => {
-    if (!product || !modalRef.current) return;
+    if (!(product && modalRef.current)) {
+      return;
+    }
 
     const focusableSelectors = [
       'a[href]',
@@ -96,25 +102,31 @@ export function QuickViewModal() {
       modalRef.current.querySelectorAll<HTMLElement>(focusableSelectors),
     );
 
-    if (focusableEls.length === 0) return;
+    if (focusableEls.length === 0) {
+      return;
+    }
 
     const firstEl = focusableEls[0];
-    const lastEl = focusableEls[focusableEls.length - 1];
+    const lastEl = focusableEls.at(-1);
+
+    if (!(firstEl && lastEl)) {
+      return;
+    }
 
     firstEl.focus();
 
     const handleTab = (e: KeyboardEvent) => {
-      if (e.key !== 'Tab') return;
+      if (e.key !== 'Tab') {
+        return;
+      }
       if (e.shiftKey) {
         if (document.activeElement === firstEl) {
           lastEl.focus();
           e.preventDefault();
         }
-      } else {
-        if (document.activeElement === lastEl) {
-          firstEl.focus();
-          e.preventDefault();
-        }
+      } else if (document.activeElement === lastEl) {
+        firstEl.focus();
+        e.preventDefault();
       }
     };
 
@@ -122,7 +134,9 @@ export function QuickViewModal() {
     return () => window.removeEventListener('keydown', handleTab);
   }, [product]);
 
-  if (!product) return null;
+  if (!product) {
+    return null;
+  }
 
   const handleAddToCart = () => {
     if (product.sizes.length > 1 && !selectedSize) {
@@ -148,35 +162,35 @@ export function QuickViewModal() {
 
   return (
     <div
+      aria-labelledby="quick-view-title"
+      aria-modal="true"
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       role="dialog"
-      aria-modal="true"
-      aria-labelledby="quick-view-title"
     >
       {/* Overlay */}
       <Button
-        variant="ghost"
-        ref={overlayRef}
-        onClick={handleClose}
         aria-label="Close quick view"
-        className="absolute inset-0 w-full h-full bg-black/60 backdrop-blur-sm cursor-default hover:bg-black/60 active:translate-y-0 rounded-none border-none p-0 focus-visible:ring-0"
+        className="absolute inset-0 h-full w-full cursor-default rounded-none border-none bg-black/60 p-0 backdrop-blur-sm hover:bg-black/60 focus-visible:ring-0 active:translate-y-0"
+        onClick={handleClose}
+        ref={overlayRef}
+        variant="ghost"
       />
 
       {/* Modal */}
       <div
-        ref={modalRef}
         className={cn(
-          'relative z-10 w-full max-w-3xl max-h-[90vh] overflow-y-auto',
-          'bg-card rounded-2xl border border-border shadow-2xl',
+          'relative z-10 max-h-[90vh] w-full max-w-3xl overflow-y-auto',
+          'rounded-2xl border border-border bg-card shadow-2xl',
         )}
+        ref={modalRef}
       >
         {/* Close */}
         <Button
-          variant="ghost"
-          size="icon"
-          onClick={handleClose}
           aria-label="Close quick view"
           className="absolute top-4 right-4 z-10"
+          onClick={handleClose}
+          size="icon"
+          variant="ghost"
         >
           <Icons.close size={18} />
         </Button>
@@ -185,18 +199,18 @@ export function QuickViewModal() {
           {/* Images */}
           <div className="flex flex-col gap-3 p-4">
             {/* Main image */}
-            <div className="relative aspect-[3/4] rounded-xl overflow-hidden bg-muted">
+            <div className="relative aspect-[3/4] overflow-hidden rounded-xl bg-muted">
               <ImageWithFallback
-                src={product.images[selectedImage] ?? product.image}
                 alt={product.name}
+                className="object-cover"
                 fill
                 priority
-                className="object-cover"
                 sizes="(max-width: 768px) 100vw, 400px"
+                src={product.images[selectedImage] ?? product.image}
               />
               {product.isNew && (
                 <div className="absolute top-3 left-3">
-                  <Badge className="text-[10px] tracking-wider uppercase">New</Badge>
+                  <Badge className="text-[10px] uppercase tracking-wider">New</Badge>
                 </div>
               )}
             </div>
@@ -206,22 +220,22 @@ export function QuickViewModal() {
               <div className="flex gap-2">
                 {product.images.map((img, i) => (
                   <Button
-                    key={img}
-                    variant="ghost"
-                    onClick={() => setSelectedImage(i)}
                     aria-label={`View image ${i + 1}`}
                     className={cn(
-                      'relative w-16 aspect-square rounded-lg overflow-hidden bg-muted shrink-0 p-0 hover:bg-muted',
+                      'relative aspect-square w-16 shrink-0 overflow-hidden rounded-lg bg-muted p-0 hover:bg-muted',
                       'ring-2 transition-all',
                       selectedImage === i ? 'ring-primary' : 'ring-transparent hover:ring-border',
                     )}
+                    key={img}
+                    onClick={() => setSelectedImage(i)}
+                    variant="ghost"
                   >
                     <ImageWithFallback
-                      src={img}
                       alt={`${product.name} view ${i + 1}`}
-                      fill
                       className="object-cover"
+                      fill
                       sizes="64px"
+                      src={img}
                     />
                   </Button>
                 ))}
@@ -233,36 +247,36 @@ export function QuickViewModal() {
           <div className="flex flex-col gap-5 p-6">
             {/* Category + name */}
             <div className="flex flex-col gap-1">
-              <span className="text-[11px] tracking-widest uppercase text-muted-foreground">
+              <span className="text-[11px] text-muted-foreground uppercase tracking-widest">
                 {product.category}
               </span>
               <h2
+                className="font-bold font-serif text-2xl text-card-foreground leading-tight"
                 id="quick-view-title"
-                className="font-serif text-2xl font-bold text-card-foreground leading-tight"
               >
                 {product.name}
               </h2>
 
               {/* Rating */}
-              <div className="flex items-center gap-2 mt-1">
+              <div className="mt-1 flex items-center gap-2">
                 <div
+                  aria-label={`Rating: ${product.rating} out of 5`}
                   className="flex items-center gap-0.5"
                   role="img"
-                  aria-label={`Rating: ${product.rating} out of 5`}
                 >
                   {[1, 2, 3, 4, 5].map((starValue) => (
                     <Icons.star
-                      key={starValue}
-                      size={13}
                       className={cn(
                         starValue <= Math.floor(product.rating)
-                          ? 'text-foreground fill-current'
+                          ? 'fill-current text-foreground'
                           : 'text-muted-foreground',
                       )}
+                      key={starValue}
+                      size={13}
                     />
                   ))}
                 </div>
-                <span className="text-xs text-muted-foreground">
+                <span className="text-muted-foreground text-xs">
                   {product.rating} ({product.reviewCount} reviews)
                 </span>
               </div>
@@ -272,15 +286,15 @@ export function QuickViewModal() {
 
             {/* Price */}
             <div className="flex items-center gap-3">
-              <span className="font-serif text-2xl font-bold text-foreground tabular-nums">
+              <span className="font-bold font-serif text-2xl text-foreground tabular-nums">
                 {formatPrice(product.price)}
               </span>
               {product.originalPrice && (
                 <>
-                  <span className="text-sm text-muted-foreground line-through tabular-nums">
+                  <span className="text-muted-foreground text-sm tabular-nums line-through">
                     {formatPrice(product.originalPrice)}
                   </span>
-                  <Badge variant="secondary" className="text-[10px] tracking-wider uppercase">
+                  <Badge className="text-[10px] uppercase tracking-wider" variant="secondary">
                     -{discount}%
                   </Badge>
                 </>
@@ -288,22 +302,22 @@ export function QuickViewModal() {
             </div>
 
             {/* Description */}
-            <p className="text-sm text-muted-foreground leading-relaxed">{product.description}</p>
+            <p className="text-muted-foreground text-sm leading-relaxed">{product.description}</p>
 
             <Separator />
 
             {/* Colors */}
             {product.colors.length > 0 && (
               <div className="flex flex-col gap-2">
-                <span className="text-xs font-medium text-foreground tracking-wide uppercase">
+                <span className="font-medium text-foreground text-xs uppercase tracking-wide">
                   Color — {product.colors[0]?.name}
                 </span>
                 <div className="flex gap-2">
                   {product.colors.map((color) => (
                     <Button
-                      key={color.name}
                       aria-label={`Color: ${color.name}`}
-                      className="w-6 h-6 rounded-full ring-2 ring-offset-2 ring-offset-card ring-border hover:ring-primary transition-all"
+                      className="h-6 w-6 rounded-full ring-2 ring-border ring-offset-2 ring-offset-card transition-all hover:ring-primary"
+                      key={color.name}
                       style={{ backgroundColor: color.hex }}
                     />
                   ))}
@@ -314,23 +328,23 @@ export function QuickViewModal() {
             {/* Sizes */}
             {product.sizes.length > 1 && (
               <div className="flex flex-col gap-2">
-                <span className="text-xs font-medium text-foreground tracking-wide uppercase">
+                <span className="font-medium text-foreground text-xs uppercase tracking-wide">
                   Size {selectedSize ? `— ${selectedSize}` : ''}
                 </span>
                 <div className="flex flex-wrap gap-2">
                   {product.sizes.map((size) => (
                     <Button
-                      key={size}
-                      variant={selectedSize === size ? 'default' : 'outline'}
-                      onClick={() => setSelectedSize(size)}
                       aria-label={`Size ${size}`}
                       aria-pressed={selectedSize === size}
                       className={cn(
-                        'h-9 min-w-[2.5rem] px-3 rounded-md text-xs font-medium transition-all',
+                        'h-9 min-w-[2.5rem] rounded-md px-3 font-medium text-xs transition-all',
                         selectedSize === size
                           ? ''
-                          : 'bg-transparent text-foreground border-border hover:border-foreground hover:bg-transparent',
+                          : 'border-border bg-transparent text-foreground hover:border-foreground hover:bg-transparent',
                       )}
+                      key={size}
+                      onClick={() => setSelectedSize(size)}
+                      variant={selectedSize === size ? 'default' : 'outline'}
                     >
                       {size}
                     </Button>
@@ -340,32 +354,32 @@ export function QuickViewModal() {
             )}
 
             {/* Actions */}
-            <div className="flex gap-3 mt-auto pt-2">
+            <div className="mt-auto flex gap-3 pt-2">
               <Button
-                className="flex-1 h-11 tracking-wider"
-                onClick={handleAddToCart}
+                className="h-11 flex-1 tracking-wider"
                 disabled={!product.inStock}
+                onClick={handleAddToCart}
               >
                 {product.inStock ? 'Add to Cart' : 'Sold Out'}
               </Button>
               <Button
-                variant="outline"
-                size="icon"
-                className={cn('h-11 w-11', isWishlisted && 'text-destructive border-destructive')}
-                onClick={() => toggle(product.id)}
                 aria-label={
                   isWishlisted
                     ? `Remove ${product.name} from wishlist`
                     : `Add ${product.name} to wishlist`
                 }
+                className={cn('h-11 w-11', isWishlisted && 'border-destructive text-destructive')}
+                onClick={() => toggle(product.id)}
+                size="icon"
+                variant="outline"
               >
-                <Icons.heart size={18} className={cn(isWishlisted && 'fill-current')} />
+                <Icons.heart className={cn(isWishlisted && 'fill-current')} size={18} />
               </Button>
             </div>
 
             {/* Stock warning */}
             {!product.inStock && (
-              <p className="text-xs text-muted-foreground text-center">
+              <p className="text-center text-muted-foreground text-xs">
                 This item is currently out of stock.
               </p>
             )}

@@ -48,7 +48,9 @@ export function CategoriesSection() {
 
   useGSAP(
     () => {
-      if (reducedMotion) return;
+      if (reducedMotion) {
+        return;
+      }
 
       gsap.from('.category-header', {
         autoAlpha: 0,
@@ -80,22 +82,22 @@ export function CategoriesSection() {
 
   return (
     <section
-      ref={sectionRef}
-      id="categories"
-      className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto"
       aria-label="Shop by category"
+      className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8"
+      id="categories"
+      ref={sectionRef}
     >
       {/* Header */}
-      <div className="category-header flex flex-col gap-3 mb-12">
+      <div className="category-header mb-12 flex flex-col gap-3">
         <div className="flex items-center gap-3">
-          <span className="w-8 h-px bg-primary" aria-hidden="true" />
-          <span className="text-xs font-medium tracking-[0.2em] uppercase text-muted-foreground">
+          <span aria-hidden="true" className="h-px w-8 bg-primary" />
+          <span className="font-medium text-muted-foreground text-xs uppercase tracking-[0.2em]">
             Collections
           </span>
         </div>
         <h2
           className={cn(
-            'font-serif font-bold text-foreground leading-tight',
+            'font-bold font-serif text-foreground leading-tight',
             'text-[clamp(2rem,4vw,3.5rem)]',
           )}
         >
@@ -105,43 +107,43 @@ export function CategoriesSection() {
 
       {/* Bento grid */}
       <ul
-        className="category-grid grid grid-cols-2 grid-rows-3 gap-3 sm:gap-4 h-[600px] sm:h-[700px]"
         aria-label="Product categories"
+        className="category-grid grid h-[600px] grid-cols-2 grid-rows-3 gap-3 sm:h-[700px] sm:gap-4"
       >
         {CATEGORIES.map((cat) => (
-          <li key={cat.id} className={cn(cat.span, 'h-full')}>
+          <li className={cn(cat.span, 'h-full')} key={cat.id}>
             <Link
-              href={cat.href}
               aria-label={`Shop ${cat.label}`}
               className={cn(
-                'category-tile group relative block w-full h-full overflow-hidden rounded-2xl bg-muted',
+                'category-tile group relative block h-full w-full overflow-hidden rounded-2xl bg-muted',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
               )}
+              href={cat.href}
             >
               {/* Image */}
               <ImageWithFallback
-                src={cat.image}
                 alt={cat.label}
-                fill
                 className={cn(
                   'object-cover transition-transform duration-700 ease-out',
                   'group-hover:scale-105',
                 )}
+                fill
                 sizes="(max-width: 640px) 50vw, 33vw"
+                src={cat.image}
               />
 
               {/* Gradient overlay */}
               <div
-                className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent"
                 aria-hidden="true"
+                className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent"
               />
 
               {/* Label */}
-              <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5">
-                <p className="font-serif text-white text-lg sm:text-xl font-semibold leading-tight">
+              <div className="absolute right-0 bottom-0 left-0 p-4 sm:p-5">
+                <p className="font-semibold font-serif text-lg text-white leading-tight sm:text-xl">
                   {cat.label}
                 </p>
-                <p className="text-white/70 text-xs mt-0.5 tracking-wide">{cat.description}</p>
+                <p className="mt-0.5 text-white/70 text-xs tracking-wide">{cat.description}</p>
               </div>
             </Link>
           </li>

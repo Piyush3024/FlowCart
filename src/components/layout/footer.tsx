@@ -71,7 +71,9 @@ export function Footer() {
 
   useGSAP(
     () => {
-      if (reducedMotion) return;
+      if (reducedMotion) {
+        return;
+      }
 
       gsap.from('.footer-content', {
         autoAlpha: 0,
@@ -101,50 +103,50 @@ export function Footer() {
   };
 
   return (
-    <footer ref={footerRef} className="bg-card border-t border-border">
+    <footer className="border-border border-t bg-card" ref={footerRef}>
       {/* Newsletter banner */}
-      <div className="border-b border-border">
-        <div className="footer-content max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-            <div className="flex flex-col gap-2 max-w-md">
-              <h2 className="font-serif text-2xl sm:text-3xl font-bold text-card-foreground">
+      <div className="border-border border-b">
+        <div className="footer-content mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+          <div className="flex flex-col justify-between gap-8 lg:flex-row lg:items-center">
+            <div className="flex max-w-md flex-col gap-2">
+              <h2 className="font-bold font-serif text-2xl text-card-foreground sm:text-3xl">
                 Join the inner circle.
               </h2>
-              <p className="text-sm text-muted-foreground leading-relaxed">
+              <p className="text-muted-foreground text-sm leading-relaxed">
                 Early access to new drops, exclusive offers, and zero spam. Unsubscribe any time.
               </p>
             </div>
 
             {/* Newsletter form */}
-            <form onSubmit={handleSubmit(onSubmit)} noValidate className="w-full lg:max-w-md">
-              <div className="flex flex-col sm:flex-row gap-3">
-                <div className="flex-1 flex flex-col gap-1">
-                  <label htmlFor="newsletter-email" className="sr-only">
+            <form className="w-full lg:max-w-md" noValidate onSubmit={handleSubmit(onSubmit)}>
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <div className="flex flex-1 flex-col gap-1">
+                  <label className="sr-only" htmlFor="newsletter-email">
                     Email address for newsletter
                   </label>
                   <Input
                     id="newsletter-email"
-                    type="email"
                     placeholder="your@email.com"
+                    type="email"
                     {...register('email')}
-                    className="h-11 w-full"
                     aria-describedby={errors.email ? 'newsletter-error' : undefined}
+                    className="h-11 w-full"
                     disabled={isSubmitting}
                   />
                   {errors.email && (
-                    <p id="newsletter-error" className="text-xs text-destructive" role="alert">
+                    <p className="text-destructive text-xs" id="newsletter-error" role="alert">
                       {errors.email.message}
                     </p>
                   )}
                 </div>
                 <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="h-11 px-6 tracking-wider shrink-0"
                   aria-label="Subscribe to newsletter"
+                  className="h-11 shrink-0 px-6 tracking-wider"
+                  disabled={isSubmitting}
+                  type="submit"
                 >
                   {isSubmitting ? (
-                    <Icons.spinner size={16} className="animate-spin" aria-hidden="true" />
+                    <Icons.spinner aria-hidden="true" className="animate-spin" size={16} />
                   ) : (
                     'Subscribe'
                   )}
@@ -156,17 +158,17 @@ export function Footer() {
       </div>
 
       {/* Main footer */}
-      <div className="footer-content max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 lg:gap-12">
+      <div className="footer-content mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-5 lg:gap-12">
           {/* Brand column */}
-          <div className="col-span-2 lg:col-span-2 flex flex-col gap-5">
+          <div className="col-span-2 flex flex-col gap-5 lg:col-span-2">
             <Link
+              className="w-fit font-bold font-serif text-2xl text-card-foreground transition-opacity hover:opacity-70"
               href="/"
-              className="font-serif text-2xl font-bold text-card-foreground hover:opacity-70 transition-opacity w-fit"
             >
               {SITE.name}
             </Link>
-            <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
+            <p className="max-w-xs text-muted-foreground text-sm leading-relaxed">
               {SITE.description} Designed for the way you live.
             </p>
 
@@ -174,14 +176,14 @@ export function Footer() {
             <div className="flex items-center gap-2">
               {SOCIAL_LINKS.map((social) => (
                 <Button
-                  key={social.label}
-                  variant="outline"
-                  size="icon"
-                  asChild
                   aria-label={`Follow us on ${social.label}`}
-                  className="w-9 h-9"
+                  asChild
+                  className="h-9 w-9"
+                  key={social.label}
+                  size="icon"
+                  variant="outline"
                 >
-                  <a href={social.href} target="_blank" rel="noopener noreferrer">
+                  <a href={social.href} rel="noopener noreferrer" target="_blank">
                     {social.icon === 'instagram' && <Icons.instagram size={15} />}
                     {social.icon === 'twitter' && <Icons.twitter size={15} />}
                     {social.icon === 'pinterest' && <Icons.pinterest size={15} />}
@@ -193,16 +195,16 @@ export function Footer() {
 
           {/* Nav columns */}
           {Object.entries(FOOTER_LINKS).map(([group, links]) => (
-            <div key={group} className="flex flex-col gap-4">
-              <h3 className="text-xs font-semibold tracking-widest uppercase text-card-foreground">
+            <div className="flex flex-col gap-4" key={group}>
+              <h3 className="font-semibold text-card-foreground text-xs uppercase tracking-widest">
                 {group}
               </h3>
               <ul className="flex flex-col gap-3">
                 {links.map((link) => (
                   <li key={link.label}>
                     <Link
+                      className="text-muted-foreground text-sm transition-colors hover:text-card-foreground"
                       href={link.href}
-                      className="text-sm text-muted-foreground hover:text-card-foreground transition-colors"
                     >
                       {link.label}
                     </Link>
@@ -217,17 +219,17 @@ export function Footer() {
       <Separator />
 
       {/* Bottom bar */}
-      <div className="footer-content max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-muted-foreground">
+      <div className="footer-content mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+        <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+          <p className="text-muted-foreground text-xs">
             © {new Date().getFullYear()} {SITE.name}. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
             {['Privacy Policy', 'Terms of Service', 'Cookie Policy'].map((item) => (
               <Link
-                key={item}
+                className="text-muted-foreground text-xs transition-colors hover:text-card-foreground"
                 href="#"
-                className="text-xs text-muted-foreground hover:text-card-foreground transition-colors"
+                key={item}
               >
                 {item}
               </Link>

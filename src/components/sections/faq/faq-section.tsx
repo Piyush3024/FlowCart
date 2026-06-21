@@ -31,7 +31,9 @@ export function FaqSection() {
 
   useGSAP(
     () => {
-      if (reducedMotion || isPending || !faqs?.length) return;
+      if (reducedMotion || isPending || !faqs?.length) {
+        return;
+      }
 
       gsap.from('.faq-header', {
         autoAlpha: 0,
@@ -63,36 +65,36 @@ export function FaqSection() {
 
   return (
     <section
-      ref={sectionRef}
-      id="faq"
-      className="py-24 px-4 sm:px-6 lg:px-8"
       aria-label="Frequently asked questions"
+      className="px-4 py-24 sm:px-6 lg:px-8"
+      id="faq"
+      ref={sectionRef}
     >
-      <div className="max-w-3xl mx-auto">
+      <div className="mx-auto max-w-3xl">
         {/* Header */}
-        <div className="faq-header flex flex-col gap-3 mb-12 text-center">
+        <div className="faq-header mb-12 flex flex-col gap-3 text-center">
           <div className="flex items-center justify-center gap-3">
-            <span className="w-8 h-px bg-primary" aria-hidden="true" />
-            <span className="text-xs font-medium tracking-[0.2em] uppercase text-muted-foreground">
+            <span aria-hidden="true" className="h-px w-8 bg-primary" />
+            <span className="font-medium text-muted-foreground text-xs uppercase tracking-[0.2em]">
               Support
             </span>
-            <span className="w-8 h-px bg-primary" aria-hidden="true" />
+            <span aria-hidden="true" className="h-px w-8 bg-primary" />
           </div>
           <h2
             className={cn(
-              'font-serif font-bold text-foreground leading-tight',
+              'font-bold font-serif text-foreground leading-tight',
               'text-[clamp(2rem,4vw,3.5rem)]',
             )}
           >
             Frequently Asked
             <br />
-            <span className="italic text-muted-foreground">Questions</span>
+            <span className="text-muted-foreground italic">Questions</span>
           </h2>
-          <p className="text-sm text-muted-foreground max-w-md mx-auto leading-relaxed">
+          <p className="mx-auto max-w-md text-muted-foreground text-sm leading-relaxed">
             Everything you need to know about FlowCart. Can&apos;t find an answer?{' '}
             <Link
+              className="text-foreground underline underline-offset-4 transition-colors hover:text-muted-foreground"
               href="mailto:hello@flowcart.co"
-              className="text-foreground underline underline-offset-4 hover:text-muted-foreground transition-colors"
             >
               Contact us
             </Link>
@@ -102,9 +104,9 @@ export function FaqSection() {
 
         {/* Error state */}
         {isError && (
-          <div className="py-12 text-center flex flex-col items-center gap-3">
-            <p className="text-sm text-muted-foreground">Could not load FAQs. Please try again.</p>
-            <Button variant="outline" size="sm" onClick={() => refetch()}>
+          <div className="flex flex-col items-center gap-3 py-12 text-center">
+            <p className="text-muted-foreground text-sm">Could not load FAQs. Please try again.</p>
+            <Button onClick={() => refetch()} size="sm" variant="outline">
               Retry
             </Button>
           </div>
@@ -113,13 +115,13 @@ export function FaqSection() {
         {/* Skeleton */}
         {isPending && (
           <div
+            aria-busy="true"
+            aria-label="Loading FAQs"
             className="flex flex-col gap-4"
             role="status"
-            aria-label="Loading FAQs"
-            aria-busy="true"
           >
             {SKELETON_IDS.map((id) => (
-              <div key={id} className="flex flex-col gap-2 py-3 border-b border-border">
+              <div className="flex flex-col gap-2 border-border border-b py-3" key={id}>
                 <Skeleton className="h-4 w-3/4 rounded" />
                 <Skeleton className="h-3 w-1/2 rounded" />
               </div>
@@ -128,22 +130,22 @@ export function FaqSection() {
         )}
 
         {/* FAQ Accordion */}
-        {!isPending && !isError && faqs && (
+        {!(isPending || isError) && faqs && (
           <Accordion
-            type="single"
-            collapsible
-            className="faq-list w-full"
             aria-label="FAQ accordion"
+            className="faq-list w-full"
+            collapsible
             onValueChange={() => {
               setTimeout(() => ScrollTrigger.refresh(), 300);
             }}
+            type="single"
           >
             {faqs.map((faq) => (
-              <AccordionItem key={faq.id} value={faq.id} className="faq-item m-1">
-                <AccordionTrigger className="font-serif text-base font-medium text-foreground py-4 px-2">
+              <AccordionItem className="faq-item m-1" key={faq.id} value={faq.id}>
+                <AccordionTrigger className="px-2 py-4 font-medium font-serif text-base text-foreground">
                   {faq.question}
                 </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground leading-relaxed px-2">
+                <AccordionContent className="px-2 text-muted-foreground leading-relaxed">
                   {faq.answer}
                 </AccordionContent>
               </AccordionItem>

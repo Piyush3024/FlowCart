@@ -22,13 +22,13 @@ export function ProductsTable() {
       <Card>
         <CardHeader>
           <Skeleton className="h-5 w-28 rounded" />
-          <Skeleton className="h-4 w-44 rounded mt-1" />
+          <Skeleton className="mt-1 h-4 w-44 rounded" />
         </CardHeader>
         <CardContent className="px-0">
           <div className="flex flex-col gap-3 px-4">
             {Array.from({ length: 5 }).map((_, i) => (
               // biome-ignore lint/suspicious/noArrayIndexKey: skeleton placeholders
-              <Skeleton key={i} className="h-10 w-full rounded" />
+              <Skeleton className="h-10 w-full rounded" key={i} />
             ))}
           </div>
         </CardContent>
@@ -51,7 +51,7 @@ export function ProductsTable() {
               <TableHead className="pl-4">Product</TableHead>
               <TableHead className="text-right">Sold</TableHead>
               <TableHead className="text-right">Revenue</TableHead>
-              <TableHead className="text-right pr-4">Stock</TableHead>
+              <TableHead className="pr-4 text-right">Stock</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -63,16 +63,16 @@ export function ProductsTable() {
                     <span className="text-[11px] text-muted-foreground">{product.category}</span>
                   </div>
                 </TableCell>
-                <TableCell className="text-right tabular-nums text-xs">
+                <TableCell className="text-right text-xs tabular-nums">
                   {product.sold.toLocaleString()}
                 </TableCell>
-                <TableCell className="text-right tabular-nums text-xs font-medium">
+                <TableCell className="text-right font-medium text-xs tabular-nums">
                   {formatPrice(product.revenue)}
                 </TableCell>
-                <TableCell className="text-right pr-4">
+                <TableCell className="pr-4 text-right">
                   <Badge
+                    className="ml-auto text-[10px] tabular-nums"
                     variant={product.stock < 20 ? 'destructive' : 'outline'}
-                    className="text-[10px] tabular-nums ml-auto"
                   >
                     {product.stock}
                   </Badge>

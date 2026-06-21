@@ -23,7 +23,7 @@ export function Navbar() {
   const navRef = useRef<HTMLElement>(null);
 
   const hydrated = useHasHydrated();
-  const totalItems = useCartStore((s) => (hydrated ? s.totalItems() : 0));
+  const totalItems = useCartStore((s) => (hydrated ? s.items.length : 0));
   const wishlistCount = useWishlistStore((s) => (hydrated ? s.ids.length : 0));
 
   useEffect(() => {
@@ -34,7 +34,9 @@ export function Navbar() {
 
   useGSAP(
     () => {
-      if (reducedMotion) return;
+      if (reducedMotion) {
+        return;
+      }
       gsap.from(navRef.current, {
         autoAlpha: 0,
         y: -80,
@@ -49,7 +51,9 @@ export function Navbar() {
 
   useGSAP(
     () => {
-      if (!mobileMenuOpen || reducedMotion) return;
+      if (!mobileMenuOpen || reducedMotion) {
+        return;
+      }
       gsap.fromTo(
         mobileMenuRef.current,
         { autoAlpha: 0, y: -10 },
@@ -68,31 +72,31 @@ export function Navbar() {
 
   return (
     <header
-      ref={navRef}
       className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-        scrolled ? 'bg-background/90 backdrop-blur-md border-b border-border' : 'bg-transparent',
+        'fixed top-0 right-0 left-0 z-50 transition-all duration-300',
+        scrolled ? 'border-border border-b bg-background/90 backdrop-blur-md' : 'bg-transparent',
       )}
+      ref={navRef}
     >
       <nav
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between"
         aria-label="Main navigation"
+        className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8"
       >
         {/* Logo */}
         <Link
+          className="font-bold font-serif text-foreground text-xl tracking-tight transition-opacity hover:opacity-70"
           href="/"
-          className="font-serif text-xl font-bold tracking-tight text-foreground hover:opacity-70 transition-opacity"
         >
           {SITE.name}
         </Link>
 
         {/* Desktop nav */}
-        <ul className="hidden md:flex items-center gap-8">
+        <ul className="hidden items-center gap-8 md:flex">
           {NAV_ITEMS.map((item) => (
             <li key={item.href}>
               <Link
+                className="text-muted-foreground text-sm tracking-wide transition-colors duration-200 hover:text-foreground"
                 href={item.href}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 tracking-wide"
               >
                 {item.label}
               </Link>
@@ -103,11 +107,11 @@ export function Navbar() {
         {/* Actions */}
         <div className="flex items-center gap-2">
           <Button
-            variant="outline"
-            size="default"
-            asChild
             aria-label="Dashboard"
+            asChild
             className="md:hidden"
+            size="default"
+            variant="outline"
           >
             <Link href={DASHBOARD_LINK.href}>
               <Icons.analytics size={18} />
@@ -115,11 +119,11 @@ export function Navbar() {
           </Button>
 
           <Button
-            variant="default"
-            size="default"
-            asChild
             aria-label="Dashboard"
-            className="hidden md:inline-flex py-5"
+            asChild
+            className="hidden py-5 md:inline-flex"
+            size="default"
+            variant="default"
           >
             <Link href={DASHBOARD_LINK.href}>
               <Icons.analytics size={18} />
@@ -131,10 +135,10 @@ export function Navbar() {
           {/* Wishlist */}
           <div className="relative">
             <Button
-              variant="ghost"
-              size="icon"
-              asChild
               aria-label={`Wishlist (${wishlistCount} items)`}
+              asChild
+              size="icon"
+              variant="ghost"
             >
               <Link href="/#wishlist">
                 <Icons.heart size={20} />
@@ -142,9 +146,9 @@ export function Navbar() {
             </Button>
             {wishlistCount > 0 && (
               <span
-                className="absolute top-1 right-1 w-3 h-3 bg-primary text-primary-foreground text-[9px] font-bold rounded-full flex items-center justify-center pointer-events-none"
-                aria-live="polite"
                 aria-atomic="true"
+                aria-live="polite"
+                className="pointer-events-none absolute top-1 right-1 flex h-3 w-3 items-center justify-center rounded-full bg-primary font-bold text-[9px] text-primary-foreground"
               >
                 {wishlistCount}
               </span>
@@ -154,18 +158,18 @@ export function Navbar() {
           {/* Cart */}
           <div className="relative">
             <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setCartDrawerOpen(true)}
               aria-label={`Cart (${totalItems} items)`}
+              onClick={() => setCartDrawerOpen(true)}
+              size="icon"
+              variant="ghost"
             >
               <Icons.shoppingBag size={20} />
             </Button>
             {totalItems > 0 && (
               <span
-                className="absolute top-1 right-1 w-3 h-3 bg-primary text-primary-foreground text-[9px] font-bold rounded-full flex items-center justify-center pointer-events-none"
-                aria-live="polite"
                 aria-atomic="true"
+                aria-live="polite"
+                className="pointer-events-none absolute top-1 right-1 flex h-3 w-3 items-center justify-center rounded-full bg-primary font-bold text-[9px] text-primary-foreground"
               >
                 {totalItems}
               </span>
@@ -174,13 +178,13 @@ export function Navbar() {
 
           {/* Mobile menu toggle */}
           <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
-            aria-expanded={mobileMenuOpen}
             aria-controls="mobile-menu"
+            aria-expanded={mobileMenuOpen}
+            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
             className="md:hidden"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            size="icon"
+            variant="ghost"
           >
             {mobileMenuOpen ? <Icons.close size={20} /> : <Icons.menu size={20} />}
           </Button>
@@ -190,27 +194,27 @@ export function Navbar() {
       {/* Mobile menu */}
       {mobileMenuOpen && (
         <div
+          className="border-border border-b bg-background/95 backdrop-blur-md md:hidden"
           id="mobile-menu"
           ref={mobileMenuRef}
-          className="md:hidden bg-background/95 backdrop-blur-md border-b border-border"
         >
-          <ul className="max-w-7xl mx-auto px-4 py-6 flex flex-col gap-4">
+          <ul className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-6">
             {NAV_ITEMS.map((item) => (
-              <li key={item.href} className="mobile-nav-item">
+              <li className="mobile-nav-item" key={item.href}>
                 <Link
+                  className="font-serif text-foreground text-lg transition-colors hover:text-muted-foreground"
                   href={item.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-lg font-serif text-foreground hover:text-muted-foreground transition-colors"
                 >
                   {item.label}
                 </Link>
               </li>
             ))}
-            <li className="mobile-nav-item border-t border-border pt-4">
+            <li className="mobile-nav-item border-border border-t pt-4">
               <Link
+                className="font-serif text-lg text-muted-foreground transition-colors hover:text-foreground"
                 href={DASHBOARD_LINK.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className="text-lg font-serif text-muted-foreground hover:text-foreground transition-colors"
               >
                 {DASHBOARD_LINK.label}
               </Link>

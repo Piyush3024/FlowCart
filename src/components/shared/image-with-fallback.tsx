@@ -6,8 +6,8 @@ import { useEffect, useState } from 'react';
 import NoImgFallback from '@/assets/no-image.png';
 
 export interface ImageWithFallbackProps extends Omit<ImageProps, 'src' | 'onError'> {
-  src?: string | null;
   fallbackSrc?: string;
+  src?: string | null;
 }
 
 export function ImageWithFallback({

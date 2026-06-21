@@ -9,28 +9,27 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { QUERY_KEYS } from '@/constants/query-keys';
+import { useOptimisticCart } from '@/hooks/use-optimistic-cart';
+import { useOptimisticWishlist } from '@/hooks/use-optimistic-wishlist';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
 import { DURATION, EASE_DEFAULT, gsap, useGSAP } from '@/lib/gsap';
 import { cn, formatPrice } from '@/lib/utils';
 import { fetchProductDetail } from '@/services/product.service';
-import { useCartStore } from '@/stores/cart.store';
 import { useQuickViewStore } from '@/stores/quick-view.store';
-import { useWishlistStore } from '@/stores/wishlist.store';
 import type { Product } from '@/types/product.types';
 
 interface ProductCardProps {
-  product: Product;
   priority?: boolean;
+  product: Product;
 }
 
 export function ProductCard({ product, priority = false }: ProductCardProps) {
   const reducedMotion = useReducedMotion();
   const cardRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
-  const addItem = useCartStore((s) => s.addItem);
-  const toggle = useWishlistStore((s) => s.toggle);
+  const { addItem } = useOptimisticCart();
+  const { toggle, has: isWishlisted } = useOptimisticWishlist();
   const openQuickView = useQuickViewStore((s) => s.open);
-  const isWishlisted = useWishlistStore((s) => s.ids.includes(product.id));
 
   const handleMouseEnter = () => {
     queryClient.prefetchQuery({
@@ -42,7 +41,9 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 
   useGSAP(
     () => {
-      if (reducedMotion || !cardRef.current) return;
+      if (reducedMotion || !cardRef.current) {
+        return;
+      }
 
       const card = cardRef.current;
       const image = card.querySelector('.product-image');
@@ -116,9 +117,10 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 
   const handleWishlistToggle = (e: React.MouseEvent) => {
     e.stopPropagation();
+    const currentlyWishlisted = isWishlisted(product.id);
     toggle(product.id);
-    toast(isWishlisted ? 'Removed from wishlist' : 'Added to wishlist', {
-      icon: isWishlisted ? '🤍' : '❤️',
+    toast(currentlyWishlisted ? 'Removed from wishlist' : 'Added to wishlist', {
+      icon: currentlyWishlisted ? '🤍' : '❤️',
     });
   };
 
@@ -128,44 +130,44 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 
   return (
     <Card
-      ref={cardRef}
-      onMouseEnter={handleMouseEnter}
+      className="group cursor-pointer gap-3 rounded-none border-0 bg-transparent p-0 ring-0"
       onClick={() => openQuickView(product)}
-      className="group border-0 ring-0 bg-transparent p-0 gap-3 rounded-none cursor-pointer"
+      onMouseEnter={handleMouseEnter}
+      ref={cardRef}
     >
       {/* Image container */}
       <div className="relative aspect-[3/4] overflow-hidden rounded-xl bg-muted">
         <ImageWithFallback
-          src={product.image}
           alt={product.name}
+          className="product-image object-cover will-change-transform"
           fill
           priority={priority}
-          className="product-image object-cover will-change-transform"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          src={product.image}
         />
 
         {/* Overlay */}
         <div
-          className="product-overlay absolute inset-0 bg-black/20 opacity-0"
           aria-hidden="true"
+          className="product-overlay absolute inset-0 bg-black/20 opacity-0"
         />
 
         {/* Badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-1.5">
           {product.isNew && (
-            <Badge variant="default" className="text-[10px] tracking-wider uppercase">
+            <Badge className="text-[10px] uppercase tracking-wider" variant="default">
               New
             </Badge>
           )}
           {discount !== null && (
-            <Badge variant="secondary" className="text-[10px] tracking-wider uppercase">
+            <Badge className="text-[10px] uppercase tracking-wider" variant="secondary">
               -{discount}%
             </Badge>
           )}
           {!product.inStock && (
             <Badge
+              className="bg-background/80 text-[10px] uppercase tracking-wider"
               variant="outline"
-              className="text-[10px] tracking-wider uppercase bg-background/80"
             >
               Sold Out
             </Badge>
@@ -175,50 +177,50 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
         {/* Wishlist — top right */}
         <div className="absolute top-3 right-3">
           <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleWishlistToggle}
             aria-label={
-              isWishlisted
+              isWishlisted(product.id)
                 ? `Remove ${product.name} from wishlist`
                 : `Add ${product.name} to wishlist`
             }
             className={cn(
-              'w-8 h-8 rounded-full bg-background/80 backdrop-blur-sm',
-              'hover:bg-background hover:scale-110 transition-transform',
-              isWishlisted && 'text-destructive',
+              'h-8 w-8 rounded-full bg-background/80 backdrop-blur-sm',
+              'transition-transform hover:scale-110 hover:bg-background',
+              isWishlisted(product.id) && 'text-destructive',
             )}
+            onClick={handleWishlistToggle}
+            size="icon"
+            variant="ghost"
           >
-            <Icons.heart size={15} className={cn(isWishlisted && 'fill-current')} />
+            <Icons.heart className={cn(isWishlisted(product.id) && 'fill-current')} size={15} />
           </Button>
         </div>
 
         {/* Hover actions */}
         <div
           className={cn(
-            'product-actions absolute bottom-3 left-3 right-3 flex gap-2 z-[9999]',
-            'md:opacity-0 md:translate-y-2',
-            'opacity-100 translate-y-0',
+            'product-actions absolute right-3 bottom-3 left-3 z-[9999] flex gap-2',
+            'md:translate-y-2 md:opacity-0',
+            'translate-y-0 opacity-100',
           )}
         >
           <Button
-            variant="default"
-            className="flex-1 h-9 text-xs tracking-wider bg-background/90 backdrop-blur-sm text-foreground hover:bg-background"
-            onClick={handleAddToCart}
-            disabled={!product.inStock}
             aria-label={`Add ${product.name} to cart`}
+            className="h-9 flex-1 bg-background/90 text-foreground text-xs tracking-wider backdrop-blur-sm hover:bg-background"
+            disabled={!product.inStock}
+            onClick={handleAddToCart}
+            variant="default"
           >
             {product.inStock ? 'Add to Cart' : 'Sold Out'}
           </Button>
           <Button
-            variant="outline"
-            size="icon"
-            className="h-9 w-9 bg-background/90 backdrop-blur-sm border-0"
+            aria-label={`Quick view ${product.name}`}
+            className="h-9 w-9 border-0 bg-background/90 backdrop-blur-sm"
             onClick={(e) => {
               e.stopPropagation();
               openQuickView(product);
             }}
-            aria-label={`Quick view ${product.name}`}
+            size="icon"
+            variant="outline"
           >
             <Icons.eye size={15} />
           </Button>
@@ -229,31 +231,31 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
       <CardContent className="px-0 pb-0">
         <div className="flex flex-col gap-1">
           {/* Category */}
-          <span className="text-[11px] tracking-widest uppercase text-muted-foreground">
+          <span className="text-[11px] text-muted-foreground uppercase tracking-widest">
             {product.category}
           </span>
 
           {/* Name */}
-          <h3 className="font-serif text-sm font-medium text-foreground leading-snug line-clamp-1">
+          <h3 className="line-clamp-1 font-medium font-serif text-foreground text-sm leading-snug">
             {product.name}
           </h3>
 
           {/* Rating */}
           <div className="flex items-center gap-1.5">
             <div
+              aria-label={`Rating: ${product.rating} out of 5`}
               className="flex items-center gap-0.5"
               role="img"
-              aria-label={`Rating: ${product.rating} out of 5`}
             >
               {[1, 2, 3, 4, 5].map((starValue) => (
                 <Icons.star
-                  key={starValue}
-                  size={11}
                   className={cn(
                     starValue <= Math.floor(product.rating)
-                      ? 'text-foreground fill-current'
+                      ? 'fill-current text-foreground'
                       : 'text-muted-foreground',
                   )}
+                  key={starValue}
+                  size={11}
                 />
               ))}
             </div>
@@ -261,12 +263,12 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
           </div>
 
           {/* Price */}
-          <div className="flex items-center gap-2 mt-0.5">
-            <span className="font-serif text-sm font-semibold text-foreground tabular-nums">
+          <div className="mt-0.5 flex items-center gap-2">
+            <span className="font-semibold font-serif text-foreground text-sm tabular-nums">
               {formatPrice(product.price)}
             </span>
             {product.originalPrice && (
-              <span className="text-xs text-muted-foreground line-through tabular-nums">
+              <span className="text-muted-foreground text-xs tabular-nums line-through">
                 {formatPrice(product.originalPrice)}
               </span>
             )}

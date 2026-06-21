@@ -26,7 +26,9 @@ export function ProductGrid() {
 
   useGSAP(
     () => {
-      if (reducedMotion || isPending || !products?.length) return;
+      if (reducedMotion || isPending || !products?.length) {
+        return;
+      }
 
       gsap.from('.product-card-item', {
         autoAlpha: 0,
@@ -46,23 +48,23 @@ export function ProductGrid() {
 
   return (
     <section
-      ref={sectionRef}
-      id="products"
-      className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto"
       aria-label="Featured products"
+      className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8"
+      id="products"
+      ref={sectionRef}
     >
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
+      <div className="mb-12 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-3">
-            <span className="w-8 h-px bg-primary" aria-hidden="true" />
-            <span className="text-xs font-medium tracking-[0.2em] uppercase text-muted-foreground">
+            <span aria-hidden="true" className="h-px w-8 bg-primary" />
+            <span className="font-medium text-muted-foreground text-xs uppercase tracking-[0.2em]">
               Curated Selection
             </span>
           </div>
           <h2
             className={cn(
-              'font-serif font-bold text-foreground leading-tight',
+              'font-bold font-serif text-foreground leading-tight',
               'text-[clamp(2rem,4vw,3.5rem)]',
             )}
           >
@@ -70,8 +72,8 @@ export function ProductGrid() {
           </h2>
         </div>
         <Link
+          className="shrink-0 text-muted-foreground text-sm underline underline-offset-4 transition-colors hover:text-foreground"
           href="/#products"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4 shrink-0"
         >
           View all products
         </Link>
@@ -79,24 +81,24 @@ export function ProductGrid() {
 
       {/* Error state */}
       {isError && (
-        <div className="py-16 text-center flex flex-col items-center gap-3">
-          <p className="text-sm text-muted-foreground">
+        <div className="flex flex-col items-center gap-3 py-16 text-center">
+          <p className="text-muted-foreground text-sm">
             Failed to load products. Please try again.
           </p>
-          <Button variant="outline" size="sm" onClick={() => refetch()}>
+          <Button onClick={() => refetch()} size="sm" variant="outline">
             Retry
           </Button>
         </div>
       )}
 
       {/* Empty state */}
-      {!isPending && !isError && (!products || products.length === 0) && (
-        <div className="flex flex-col items-center justify-center py-24 gap-4 text-center">
-          <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
+      {!(isPending || isError) && (!products || products.length === 0) && (
+        <div className="flex flex-col items-center justify-center gap-4 py-24 text-center">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted">
             <span className="text-2xl">🛍️</span>
           </div>
-          <h3 className="font-serif font-semibold text-lg">No Products Yet</h3>
-          <p className="text-sm text-muted-foreground max-w-sm">
+          <h3 className="font-semibold font-serif text-lg">No Products Yet</h3>
+          <p className="max-w-sm text-muted-foreground text-sm">
             Our collection is being curated. Check back soon.
           </p>
         </div>
@@ -105,9 +107,9 @@ export function ProductGrid() {
       {/* Grid */}
       {!isError && (
         <ul
-          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-10"
-          aria-label="Product list"
           aria-busy={isPending}
+          aria-label="Product list"
+          className="grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-3 lg:grid-cols-4"
         >
           {isPending
             ? SKELETON_IDS.map((id) => (
@@ -116,8 +118,8 @@ export function ProductGrid() {
                 </li>
               ))
             : products?.map((product, i) => (
-                <li key={product.id} className="product-card-item">
-                  <ProductCard product={product} priority={i < 2} />
+                <li className="product-card-item" key={product.id}>
+                  <ProductCard priority={i < 2} product={product} />
                 </li>
               ))}
         </ul>

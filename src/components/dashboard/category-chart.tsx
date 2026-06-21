@@ -33,7 +33,7 @@ export function CategoryChart() {
       <Card>
         <CardHeader>
           <Skeleton className="h-5 w-32 rounded" />
-          <Skeleton className="h-4 w-24 rounded mt-1" />
+          <Skeleton className="mt-1 h-4 w-24 rounded" />
         </CardHeader>
         <CardContent>
           <Skeleton className="h-48 w-full rounded-lg" />
@@ -51,19 +51,19 @@ export function CategoryChart() {
         <CardDescription>Revenue share — 2025</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="h-48 w-full">
+        <ChartContainer className="h-48 w-full" config={chartConfig}>
           <PieChart>
             <Pie
-              data={categoryData}
               cx="50%"
               cy="50%"
+              data={categoryData}
+              dataKey="value"
               innerRadius={55}
               outerRadius={80}
               paddingAngle={3}
-              dataKey="value"
             >
               {categoryData.map((entry, i) => (
-                <Cell key={entry.name} fill={COLORS[i % COLORS.length]} stroke="transparent" />
+                <Cell fill={COLORS[i % COLORS.length]} key={entry.name} stroke="transparent" />
               ))}
             </Pie>
             <ChartTooltip content={<ChartTooltipContent formatter={(value) => `${value}%`} />} />
@@ -71,16 +71,16 @@ export function CategoryChart() {
         </ChartContainer>
 
         {/* Legend */}
-        <div className="grid grid-cols-2 gap-2 mt-4">
+        <div className="mt-4 grid grid-cols-2 gap-2">
           {categoryData.map((cat, i) => (
-            <div key={cat.name} className="flex items-center gap-2">
+            <div className="flex items-center gap-2" key={cat.name}>
               <div
-                className="w-2.5 h-2.5 rounded-sm shrink-0"
-                style={{ backgroundColor: COLORS[i % COLORS.length] }}
                 aria-hidden="true"
+                className="h-2.5 w-2.5 shrink-0 rounded-sm"
+                style={{ backgroundColor: COLORS[i % COLORS.length] }}
               />
-              <span className="text-xs text-muted-foreground truncate">{cat.name}</span>
-              <span className="text-xs font-medium text-foreground ml-auto tabular-nums">
+              <span className="truncate text-muted-foreground text-xs">{cat.name}</span>
+              <span className="ml-auto font-medium text-foreground text-xs tabular-nums">
                 {cat.value}%
               </span>
             </div>
